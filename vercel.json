@@ -5,12 +5,6 @@
       "has": [{ "type": "host", "value": "www.afa-progress.com" }],
       "destination": "https://afa-progress.com/:path*",
       "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "afa-mint-progress.vercel.app" }],
-      "destination": "https://afa-progress.com/:path*",
-      "permanent": true
     }
   ],
   "headers": [

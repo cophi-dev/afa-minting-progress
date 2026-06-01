@@ -23,7 +23,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "https://afa-progress.com/",
+  "start_url": "/",
   "display": "standalone",
   "theme_color": "#0d0f12",
   "background_color": "#0d0f12"
