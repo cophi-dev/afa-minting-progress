@@ -244,8 +244,9 @@ const MintProgress = ({ mintedCount, latestMints, fetchError, mintDataLoading, h
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'space-between',
                       gap: 0.75,
-                      flexWrap: 'wrap',
+                      width: '100%',
                       mb: isMobile ? 0.25 : 0,
                     }}
                   >
@@ -255,6 +256,7 @@ const MintProgress = ({ mintedCount, latestMints, fetchError, mintDataLoading, h
                         fontSize: isMobile ? '0.875rem' : '14px',
                         fontWeight: 600,
                         lineHeight: 1.3,
+                        minWidth: 0,
                       }}
                     >
                       #{mint.tokenId}
@@ -263,6 +265,7 @@ const MintProgress = ({ mintedCount, latestMints, fetchError, mintDataLoading, h
                       <Box
                         component="span"
                         sx={{
+                          flexShrink: 0,
                           color: '#ffb74d',
                           fontSize: isMobile ? '0.625rem' : '10px',
                           fontWeight: 700,
