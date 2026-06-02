@@ -1,11 +1,11 @@
 /** Bump when a deploy must invalidate client-side caches for all users. */
-export const APP_CACHE_VERSION = '2';
+export const APP_CACHE_VERSION = '3';
 
-export const MINT_STATUS_CACHE_KEY = 'afa-mint-status-v2';
+export const MINT_STATUS_CACHE_KEY = 'afa-mint-status-v3';
 
 const APP_CACHE_VERSION_KEY = 'afa-app-cache-version';
 
-const LEGACY_CACHE_KEYS = ['afa-mint-status-v1'];
+const LEGACY_CACHE_KEYS = ['afa-mint-status-v1', 'afa-mint-status-v2'];
 
 export const purgeStaleClientCaches = () => {
   try {

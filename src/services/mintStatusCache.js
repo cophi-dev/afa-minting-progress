@@ -10,6 +10,7 @@ const buildLatestMints = (statuses) =>
       tokenId,
       timestamp: data.timestamp,
       owner: data.owner,
+      isTransfer: Boolean(data.isTransfer),
     }));
 
 export const loadMintCache = () => {

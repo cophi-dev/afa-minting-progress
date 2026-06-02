@@ -240,17 +240,46 @@ const MintProgress = ({ mintedCount, latestMints, fetchError, mintDataLoading, h
                   }}
                 />
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography
+                  <Box
                     sx={{
-                      color: '#fff',
-                      fontSize: isMobile ? '0.875rem' : '14px',
-                      fontWeight: 600,
-                      lineHeight: 1.3,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.75,
+                      flexWrap: 'wrap',
                       mb: isMobile ? 0.25 : 0,
                     }}
                   >
-                    #{mint.tokenId}
-                  </Typography>
+                    <Typography
+                      sx={{
+                        color: '#fff',
+                        fontSize: isMobile ? '0.875rem' : '14px',
+                        fontWeight: 600,
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      #{mint.tokenId}
+                    </Typography>
+                    {mint.isTransfer && (
+                      <Box
+                        component="span"
+                        sx={{
+                          color: '#ffb74d',
+                          fontSize: isMobile ? '0.625rem' : '10px',
+                          fontWeight: 700,
+                          letterSpacing: '0.04em',
+                          textTransform: 'uppercase',
+                          lineHeight: 1,
+                          px: 0.625,
+                          py: 0.25,
+                          borderRadius: '4px',
+                          border: '1px solid rgba(255, 183, 77, 0.45)',
+                          bgcolor: 'rgba(255, 183, 77, 0.12)',
+                        }}
+                      >
+                        Transfer
+                      </Box>
+                    )}
+                  </Box>
                   <Typography
                     sx={{
                       color: 'rgba(255,255,255,0.45)',
