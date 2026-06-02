@@ -7,7 +7,7 @@ import { setAfaIpfsImageSrc, tryNextAfaIpfsGateway } from '../utils/imageUrls';
 
 const MintProgress = ({ mintedCount, latestMints, fetchError, mintDataLoading, hidden = false, onMintClick, docked = false }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth <= 768);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
