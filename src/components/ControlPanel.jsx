@@ -120,6 +120,8 @@ const ControlPanel = ({
   traitCatalogLoading = false,
   onTraitFilterOpen,
   filteredMatchCount = null,
+  filteredMintedCount = null,
+  mintDataLoading = false,
   docked = false,
   shuffleEnabled = false,
   onShuffleToggle,
@@ -196,6 +198,8 @@ const ControlPanel = ({
           filters={traitFilters}
           onChange={onTraitFiltersChange}
           matchCount={filteredMatchCount}
+          mintedCount={filteredMintedCount}
+          mintDataLoading={mintDataLoading}
           loading={traitCatalogLoading}
           isMobile={isMobile}
           onExpand={onTraitFilterOpen}

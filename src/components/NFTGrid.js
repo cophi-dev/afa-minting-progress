@@ -62,6 +62,15 @@ function NFTGrid() {
     [traitFilters]
   );
 
+  const filteredMintedCount = useMemo(() => {
+    if (!filteredTokenIds?.length) return null;
+    let count = 0;
+    filteredTokenIds.forEach((tokenId) => {
+      if (mintedStatus.has(tokenId)) count += 1;
+    });
+    return count;
+  }, [filteredTokenIds, mintedStatus]);
+
   const displayTokenList = shuffleEnabled ? shuffledTokenIds : filteredTokenIds;
   const displayTokenCount = displayTokenList?.length ?? TOTAL_TOKENS;
 
@@ -323,6 +332,8 @@ function NFTGrid() {
             traitCatalogLoading={traitCatalogLoading}
             onTraitFilterOpen={handleTraitFilterOpen}
             filteredMatchCount={filteredTokenIds?.length ?? null}
+            filteredMintedCount={filteredMintedCount}
+            mintDataLoading={mintDataLoading}
             shuffleEnabled={shuffleEnabled}
             onShuffleToggle={handleShuffleToggle}
           />
@@ -355,6 +366,8 @@ function NFTGrid() {
               traitCatalogLoading={traitCatalogLoading}
               onTraitFilterOpen={handleTraitFilterOpen}
               filteredMatchCount={filteredTokenIds?.length ?? null}
+              filteredMintedCount={filteredMintedCount}
+              mintDataLoading={mintDataLoading}
               shuffleEnabled={shuffleEnabled}
               onShuffleToggle={handleShuffleToggle}
             />

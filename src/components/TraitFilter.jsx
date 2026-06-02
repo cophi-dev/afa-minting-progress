@@ -35,11 +35,20 @@ const formatMatchLabel = (matchCount, activeFilterCount) => {
   return `${n.toLocaleString()} ${n === 1 ? 'ape' : 'apes'} match`;
 };
 
+/** Mint % among filtered matches only (not vs. 10k collection). */
+const formatFilterMintLabel = (matchCount, mintedCount) => {
+  if (matchCount == null || mintedCount == null || matchCount <= 0) return null;
+  const pct = ((mintedCount / matchCount) * 100).toFixed(matchCount >= 1000 ? 1 : 2);
+  return `${pct}% minted AFA`;
+};
+
 const TraitFilter = ({
   catalog,
   filters,
   onChange,
   matchCount,
+  mintedCount = null,
+  mintDataLoading = false,
   loading = false,
   isMobile = false,
   onExpand,
@@ -53,6 +62,11 @@ const TraitFilter = ({
     () => Object.values(filters).reduce((sum, values) => sum + (values?.length ?? 0), 0),
     [filters]
   );
+
+  const mintPercentLabel = useMemo(() => {
+    if (activeFilterCount === 0 || mintDataLoading) return null;
+    return formatFilterMintLabel(matchCount, mintedCount);
+  }, [activeFilterCount, mintDataLoading, matchCount, mintedCount]);
 
   const activeTypeValues = useMemo(() => {
     if (!catalog || !activeType) return [];
@@ -174,6 +188,22 @@ const TraitFilter = ({
               </Box>
             )}
           </Typography>
+          {mintPercentLabel && (
+            <Typography
+              component="span"
+              sx={{
+                display: 'block',
+                mt: 0.125,
+                fontSize: isMobile ? '0.6875rem' : '0.625rem',
+                color: 'rgba(255,255,255,0.32)',
+                fontWeight: 500,
+                fontVariantNumeric: 'tabular-nums',
+                lineHeight: 1.3,
+              }}
+            >
+              {mintPercentLabel}
+            </Typography>
+          )}
         </Box>
 
         <ExpandMoreIcon
