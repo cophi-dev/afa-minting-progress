@@ -16,6 +16,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TuneIcon from '@mui/icons-material/Tune';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
 import TraitFilter from './TraitFilter';
 import './ControlPanel.css';
 
@@ -90,6 +91,21 @@ const mobileSwitchSx = {
   mr: -0.25,
 };
 
+const triggerButtonSx = (active = false) => ({
+  bgcolor: active ? 'rgba(110, 231, 160, 0.12)' : 'rgba(16, 18, 22, 0.92)',
+  backdropFilter: 'blur(14px)',
+  border: active
+    ? '1px solid rgba(110, 231, 160, 0.35)'
+    : '1px solid rgba(255, 255, 255, 0.1)',
+  color: active ? '#6ee7a0' : 'rgba(255,255,255,0.75)',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    bgcolor: active ? 'rgba(110, 231, 160, 0.18)' : 'rgba(24, 26, 30, 0.96)',
+    color: active ? '#6ee7a0' : '#fff',
+    borderColor: active ? 'rgba(110, 231, 160, 0.45)' : 'rgba(255,255,255,0.16)',
+  },
+});
+
 const ControlPanel = ({
   onTokenSearch,
   onZoomChange,
@@ -105,6 +121,8 @@ const ControlPanel = ({
   onTraitFilterOpen,
   filteredMatchCount = null,
   docked = false,
+  shuffleEnabled = false,
+  onShuffleToggle,
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -307,103 +325,119 @@ const ControlPanel = ({
       </Box>
     ) : null;
 
-  if (isMobile && !isExpanded && !hidden) {
+  const renderCollapsedControls = ({ mobile = false } = {}) => {
+    const buttonSize = mobile ? 52 : (docked ? 44 : 36);
+    const iconSize = mobile ? 22 : (docked ? 22 : 18);
+    const borderRadius = mobile ? '14px' : (docked ? '12px' : '10px');
+    const sharedButtonSx = {
+      width: buttonSize,
+      height: buttonSize,
+      borderRadius,
+      flexShrink: 0,
+      ...triggerButtonSx(false),
+    };
+    const activeButtonSx = {
+      ...sharedButtonSx,
+      ...triggerButtonSx(true),
+    };
+
     return (
-      <Tooltip
-        title={
-          activeTraitCount > 0
-            ? `Controls · ${activeTraitCount} trait filter${activeTraitCount === 1 ? '' : 's'}`
-            : 'Open controls'
+      <Box
+        className={`control-panel-collapsed${mobile ? ' mobile' : ''}${docked ? ' docked' : ''}`}
+        sx={
+          mobile
+            ? {
+                position: 'fixed',
+                right: 16,
+                bottom: 'max(16px, env(safe-area-inset-bottom, 0px))',
+                zIndex: 1600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+              }
+            : {
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.75,
+                ...(docked
+                  ? {}
+                  : {
+                      position: 'fixed',
+                      top: 14,
+                      right: 14,
+                      zIndex: 1600,
+                    }),
+              }
         }
-        placement="left"
       >
-        <IconButton
-          className="control-panel-fab"
-          onClick={openMobilePanel}
-          aria-label="Open controls"
-          aria-haspopup="dialog"
-          sx={{
-            position: 'fixed',
-            right: 16,
-            bottom: 'max(16px, env(safe-area-inset-bottom, 0px))',
-            zIndex: 1600,
-            width: 52,
-            height: 52,
-            bgcolor: 'rgba(16, 18, 22, 0.92)',
-            backdropFilter: 'blur(14px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '14px',
-            color: 'rgba(255,255,255,0.85)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.35)',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-            '&:hover': {
-              bgcolor: 'rgba(24, 26, 30, 0.96)',
-              color: '#fff',
-              boxShadow: '0 6px 24px rgba(0,0,0,0.42)',
-            },
-            '&:active': {
-              transform: 'scale(0.96)',
-            },
-          }}
+        <Tooltip
+          title={shuffleEnabled ? 'Shuffle on' : 'Shuffle grid'}
+          placement={mobile ? 'top' : (docked ? 'top' : 'left')}
         >
-          <TuneIcon sx={{ fontSize: 22 }} />
-          {mobileFabBadges}
-        </IconButton>
-      </Tooltip>
+          <IconButton
+            className="control-panel-shuffle-trigger"
+            onClick={onShuffleToggle}
+            aria-label={shuffleEnabled ? 'Disable shuffle' : 'Enable shuffle'}
+            aria-pressed={shuffleEnabled}
+            sx={shuffleEnabled ? activeButtonSx : sharedButtonSx}
+          >
+            <ShuffleIcon sx={{ fontSize: iconSize }} />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip
+          title={
+            activeTraitCount > 0
+              ? mobile
+                ? `Controls · ${activeTraitCount} trait filter${activeTraitCount === 1 ? '' : 's'}`
+                : `Controls · ${filteredMatchCount ?? 0} apes match filters`
+              : 'Open controls'
+          }
+          placement={mobile ? 'top' : (docked ? 'top' : 'left')}
+        >
+          <IconButton
+            className={`control-panel-trigger${mobile ? ' control-panel-fab' : ''}`}
+            onClick={mobile ? openMobilePanel : openDesktopPanel}
+            aria-label="Open controls"
+            aria-haspopup={mobile ? 'dialog' : undefined}
+            sx={{
+              ...sharedButtonSx,
+              position: 'relative',
+              boxShadow: mobile
+                ? '0 4px 20px rgba(0,0,0,0.35)'
+                : docked
+                  ? '0 8px 32px rgba(0,0,0,0.4)'
+                  : '0 2px 12px rgba(0,0,0,0.28)',
+              '&:hover': {
+                ...sharedButtonSx['&:hover'],
+                boxShadow: '0 6px 24px rgba(0,0,0,0.42)',
+              },
+              '&:active': mobile
+                ? {
+                    transform: 'scale(0.96)',
+                  }
+                : undefined,
+            }}
+          >
+            <TuneIcon sx={{ fontSize: iconSize }} />
+            {mobile ? mobileFabBadges : null}
+            {!mobile && activeTraitCount > 0 && (
+              <Box className="control-panel-trigger-badge" aria-hidden>
+                {activeTraitCount > 9 ? '9+' : activeTraitCount}
+              </Box>
+            )}
+          </IconButton>
+        </Tooltip>
+      </Box>
     );
+  };
+
+  if (isMobile && !isExpanded && !hidden) {
+    return renderCollapsedControls({ mobile: true });
   }
 
   if (!isMobile && isMinimized) {
-    return (
-      <Tooltip
-        title={
-          activeTraitCount > 0
-            ? `Controls · ${filteredMatchCount ?? 0} apes match filters`
-            : 'Open controls'
-        }
-        placement={docked ? 'top' : 'left'}
-      >
-        <IconButton
-          className="control-panel-trigger"
-          onClick={openDesktopPanel}
-          aria-label="Open controls"
-          sx={{
-            ...(docked
-              ? {}
-              : {
-                  position: 'fixed',
-                  top: 14,
-                  right: 14,
-                  zIndex: 1600,
-                }),
-            width: docked ? 44 : 36,
-            height: docked ? 44 : 36,
-            bgcolor: 'rgba(16, 18, 22, 0.92)',
-            backdropFilter: 'blur(14px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: docked ? '12px' : '10px',
-            color: 'rgba(255,255,255,0.75)',
-            boxShadow: docked
-              ? '0 8px 32px rgba(0,0,0,0.4)'
-              : '0 2px 12px rgba(0,0,0,0.28)',
-            transition: 'all 0.2s ease',
-            '&:hover': {
-              bgcolor: 'rgba(24, 26, 30, 0.96)',
-              color: '#fff',
-              borderColor: 'rgba(255,255,255,0.16)',
-              boxShadow: '0 6px 24px rgba(0,0,0,0.42)',
-            },
-          }}
-        >
-          <TuneIcon sx={{ fontSize: docked ? 22 : 18 }} />
-          {activeTraitCount > 0 && (
-            <Box className="control-panel-trigger-badge" aria-hidden>
-              {activeTraitCount > 9 ? '9+' : activeTraitCount}
-            </Box>
-          )}
-        </IconButton>
-      </Tooltip>
-    );
+    return renderCollapsedControls();
   }
 
   if (isMobile && hidden) {

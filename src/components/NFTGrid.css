@@ -48,7 +48,8 @@ html, body, #root {
   transition: height 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nft-grid.filtered .nft-grid-visible {
+.nft-grid.filtered .nft-grid-visible,
+.nft-grid.shuffled .nft-grid-visible {
   transition: opacity 0.22s ease;
 }
 

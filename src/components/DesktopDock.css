@@ -41,6 +41,20 @@
   border-radius: 12px;
 }
 
+.desktop-dock .control-panel-collapsed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.desktop-dock .control-panel-shuffle-trigger,
+.desktop-dock .control-panel-trigger {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
 @media (max-width: 1100px) {
   .desktop-dock {
     flex-direction: column;

@@ -14,6 +14,10 @@ import {
   computeGridLayout,
   computeGridMetrics,
 } from '../utils/gridLayout';
+import {
+  createSequentialTokenIds,
+  shuffleTokenIds,
+} from '../utils/shuffleTokenIds';
 import './NFTGrid.css';
 import './DesktopDock.css';
 
@@ -43,6 +47,8 @@ function NFTGrid() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const [visibleRange, setVisibleRange] = useState(initialLayout.visibleRange);
+  const [shuffleEnabled, setShuffleEnabled] = useState(false);
+  const [shuffledTokenIds, setShuffledTokenIds] = useState(null);
 
   const gridRef = useRef(null);
   const mintedStatusRef = useRef(mintedStatus);
@@ -56,7 +62,8 @@ function NFTGrid() {
     [traitFilters]
   );
 
-  const displayTokenCount = filteredTokenIds?.length ?? TOTAL_TOKENS;
+  const displayTokenList = shuffleEnabled ? shuffledTokenIds : filteredTokenIds;
+  const displayTokenCount = displayTokenList?.length ?? TOTAL_TOKENS;
 
   const { gridWidth, cellsPerRow, totalRows } = useMemo(
     () => computeGridMetrics({
@@ -193,8 +200,8 @@ function NFTGrid() {
     if (!el) return;
 
     let displayIndex = tokenId;
-    if (filteredTokenIds) {
-      displayIndex = filteredTokenIds.indexOf(tokenId);
+    if (displayTokenList) {
+      displayIndex = displayTokenList.indexOf(tokenId);
       if (displayIndex === -1) return;
     }
 
@@ -203,7 +210,27 @@ function NFTGrid() {
     el.scrollTo({ top: targetScroll, behavior: 'smooth' });
     setSelectedTokenId(tokenId);
     setTimeout(() => setSelectedTokenId(null), 3000);
-  }, [cellsPerRow, zoom, filteredTokenIds]);
+  }, [cellsPerRow, zoom, displayTokenList]);
+
+  const scrollGridToTop = useCallback(() => {
+    const el = gridRef.current;
+    if (el) el.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleShuffleToggle = useCallback(() => {
+    setShuffleEnabled((prev) => {
+      if (prev) setShuffledTokenIds(null);
+      return !prev;
+    });
+    scrollGridToTop();
+  }, [scrollGridToTop]);
+
+  useEffect(() => {
+    if (!shuffleEnabled) return;
+    const source = filteredTokenIds ?? createSequentialTokenIds(TOTAL_TOKENS);
+    setShuffledTokenIds(shuffleTokenIds(source));
+    scrollGridToTop();
+  }, [filteredTokenIds, shuffleEnabled, scrollGridToTop]);
 
   const handleZoomChange = useCallback((newZoom) => {
     setZoom(newZoom);
@@ -237,7 +264,7 @@ function NFTGrid() {
     <>
       <div className="nft-grid-wrapper" ref={gridRef}>
         <div
-          className={`nft-grid${filteredTokenIds ? ' filtered' : ''}`}
+          className={`nft-grid${filteredTokenIds ? ' filtered' : ''}${shuffleEnabled ? ' shuffled' : ''}`}
           onClick={handleGridClick}
           style={{
             width: gridWidth,
@@ -245,7 +272,7 @@ function NFTGrid() {
             margin: isMobile ? '0' : '0 auto',
           }}
         >
-          {filteredTokenIds?.length === 0 && (
+          {displayTokenList?.length === 0 && (
             <div className="nft-grid-empty">
               <p>No apes match the selected traits.</p>
             </div>
@@ -259,7 +286,7 @@ function NFTGrid() {
             showBayc={showBayc}
             selectedTokenId={selectedTokenId}
             totalTokens={displayTokenCount}
-            tokenIdList={filteredTokenIds}
+            tokenIdList={displayTokenList}
           />
         </div>
       </div>
@@ -296,6 +323,8 @@ function NFTGrid() {
             traitCatalogLoading={traitCatalogLoading}
             onTraitFilterOpen={handleTraitFilterOpen}
             filteredMatchCount={filteredTokenIds?.length ?? null}
+            shuffleEnabled={shuffleEnabled}
+            onShuffleToggle={handleShuffleToggle}
           />
         </>
       ) : (
@@ -326,6 +355,8 @@ function NFTGrid() {
               traitCatalogLoading={traitCatalogLoading}
               onTraitFilterOpen={handleTraitFilterOpen}
               filteredMatchCount={filteredTokenIds?.length ?? null}
+              shuffleEnabled={shuffleEnabled}
+              onShuffleToggle={handleShuffleToggle}
             />
           </div>
         </Draggable>
