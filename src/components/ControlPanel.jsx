@@ -388,9 +388,7 @@ const ControlPanel = ({
         <Tooltip
           title={
             activeTraitCount > 0
-              ? mobile
-                ? `Controls · ${activeTraitCount} trait filter${activeTraitCount === 1 ? '' : 's'}`
-                : `Controls · ${filteredMatchCount ?? 0} apes match filters`
+              ? `Controls · ${activeTraitCount} trait filter${activeTraitCount === 1 ? '' : 's'}`
               : 'Open controls'
           }
           placement={mobile ? 'top' : (docked ? 'top' : 'left')}
@@ -532,11 +530,6 @@ const ControlPanel = ({
               Controls
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, ml: 0.5, flexWrap: 'wrap' }}>
-              {activeTraitCount > 0 && (
-                <Box className="control-panel-badge accent" title="Filtered ape count">
-                  {filteredMatchCount ?? 0} match
-                </Box>
-              )}
               {isMobile && (
                 <>
                   <Box className="control-panel-badge">{zoom}px</Box>

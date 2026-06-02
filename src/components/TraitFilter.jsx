@@ -70,6 +70,15 @@ const TraitFilter = ({
   }, [activeFilterCount]);
 
   useEffect(() => {
+    if (!catalog?.length) return;
+    if (activeType && catalog.some((entry) => entry.traitType === activeType)) return;
+    const firstWithSelection = catalog.find(
+      (entry) => (filters[entry.traitType]?.length ?? 0) > 0
+    );
+    setActiveType(firstWithSelection?.traitType ?? catalog[0].traitType);
+  }, [catalog, activeType, filters]);
+
+  useEffect(() => {
     onExpandedChange?.(expanded);
   }, [expanded, onExpandedChange]);
 
@@ -327,9 +336,9 @@ const TraitFilter = ({
                 role="group"
                 aria-label={`${activeType} values`}
               >
-                {filteredTypeValues.length === 0 && (
+                {filteredTypeValues.length === 0 && valueSearch.trim() && (
                   <Typography sx={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', py: 1 }}>
-                    No traits match &ldquo;{valueSearch}&rdquo;
+                    No traits match &ldquo;{valueSearch.trim()}&rdquo;
                   </Typography>
                 )}
                 {filteredTypeValues.map(({ value, count }) => {
@@ -349,29 +358,16 @@ const TraitFilter = ({
                 })}
               </Box>
 
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  mt: 1.25,
-                  pt: 1,
-                  borderTop: '1px solid rgba(255,255,255,0.06)',
-                  gap: 1,
-                }}
-              >
-                <Typography
+              {activeFilterCount > 0 && (
+                <Box
                   sx={{
-                    fontSize: isMobile ? '0.8125rem' : '0.75rem',
-                    fontWeight: 600,
-                    color: activeFilterCount > 0 ? '#6ee7a0' : 'rgba(255,255,255,0.45)',
-                    fontVariantNumeric: 'tabular-nums',
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    mt: 1.25,
+                    pt: 1,
+                    borderTop: '1px solid rgba(255,255,255,0.06)',
                   }}
                 >
-                  {formatMatchLabel(matchCount, activeFilterCount)}
-                </Typography>
-
-                {activeFilterCount > 0 && (
                   <Button
                     size="small"
                     onClick={handleClearAll}
@@ -394,8 +390,8 @@ const TraitFilter = ({
                   >
                     Clear all
                   </Button>
-                )}
-              </Box>
+                </Box>
+              )}
             </>
           )}
 
