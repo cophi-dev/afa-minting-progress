@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
 import SiteHeader from './SiteHeader';
 import ControlPanel from './ControlPanel';
+import TraitFilter from './TraitFilter';
 import VirtualGrid from './VirtualGrid';
 import { getAfaThumbnailUrl, getBaycThumbnailUrl, prefetchHiresManifest } from '../utils/imageUrls';
 import { loadBaycMapping, getTraitCatalog, filterTokenIds } from '../data/baycMetadata';
@@ -54,6 +55,7 @@ function NFTGrid() {
   const [shuffledTokenIds, setShuffledTokenIds] = useState(null);
 
   const gridRef = useRef(null);
+  const traitBarRef = useRef(null);
   const mintedStatusRef = useRef(mintedStatus);
   const rangeRef = useRef(initialLayout.visibleRange);
   const mintedCount = mintedCountFromChain ?? mintedStatus.size;
@@ -152,6 +154,26 @@ function NFTGrid() {
   }, [syncVisibleRange]);
 
   useEffect(() => {
+    const el = traitBarRef.current;
+    if (!isMobile || !el) {
+      document.documentElement.style.removeProperty('--mobile-trait-offset');
+      return undefined;
+    }
+
+    const apply = () => {
+      document.documentElement.style.setProperty('--mobile-trait-offset', `${el.offsetHeight}px`);
+    };
+
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.removeProperty('--mobile-trait-offset');
+    };
+  }, [isMobile]);
+
+  useEffect(() => {
     const el = gridRef.current;
     if (!el) return undefined;
 
@@ -233,7 +255,10 @@ function NFTGrid() {
     const rect = cell.getBoundingClientRect();
     const width = Math.ceil(text.length * 7.2 + 16);
     const height = 24;
-    const headerBottom = document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 0;
+    const headerBottom = Math.max(
+      document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 0,
+      document.querySelector('.mobile-trait-bar')?.getBoundingClientRect().bottom ?? 0,
+    );
     const toolsOffset = parseFloat(
       getComputedStyle(document.documentElement).getPropertyValue('--site-tools-offset')
     ) || 0;
@@ -340,6 +365,21 @@ function NFTGrid() {
         fetchError={fetchError}
         onRetry={handleRetryMintStatus}
       />
+      {isMobile && (
+        <div className="mobile-trait-bar" ref={traitBarRef}>
+          <TraitFilter
+            catalog={traitCatalog}
+            filters={traitFilters}
+            onChange={handleTraitFiltersChange}
+            matchCount={filteredTokenIds?.length ?? null}
+            mintedCount={filteredMintedCount}
+            mintDataLoading={mintDataLoading}
+            loading={traitCatalogLoading}
+            isMobile
+            onExpand={handleTraitFilterOpen}
+          />
+        </div>
+      )}
       <div className="nft-grid-wrapper" ref={gridRef} aria-busy={showSkeleton}>
         <div
           className={`nft-grid${filteredTokenIds ? ' filtered' : ''}${shuffleEnabled ? ' shuffled' : ''}`}
@@ -394,6 +434,7 @@ function NFTGrid() {
         zoom={zoom}
         showBayc={showBayc}
         isMobile={isMobile}
+        showTraitFilter={!isMobile}
         hidden={modalOpen}
         traitFilters={traitFilters}
         onTraitFiltersChange={handleTraitFiltersChange}

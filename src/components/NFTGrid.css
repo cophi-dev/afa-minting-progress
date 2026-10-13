@@ -251,9 +251,23 @@ html, body, #root {
 
 /* Mobile — minimal inset so the grid fills the viewport */
 @media (max-width: 768px) {
+  .mobile-trait-bar {
+    position: fixed;
+    z-index: 1350;
+    top: var(--site-header-offset, 108px);
+    left: 0;
+    right: 0;
+    padding: 8px 10px;
+    background: rgba(13, 15, 18, 0.94);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    max-height: min(48dvh, 420px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .nft-grid-wrapper {
     padding: 2px;
-    top: var(--site-header-offset, 128px);
+    top: calc(var(--site-header-offset, 128px) + var(--mobile-trait-offset, 76px));
     bottom: var(--site-tools-offset, 44px);
     touch-action: pan-y;
   }
