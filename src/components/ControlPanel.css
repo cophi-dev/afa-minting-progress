@@ -49,7 +49,8 @@
 }
 
 .control-panel.mobile.expanded {
-  max-height: min(85dvh, 680px) !important;
+  max-height: min(68dvh, 580px) !important;
+  border-radius: 0 !important;
 }
 
 .control-panel.mobile.expanded.trait-filter-expanded {
@@ -153,7 +154,7 @@
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    bottom: 0 !important;
+    bottom: var(--site-tools-offset, 44px) !important;
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.45) !important;
     border: none !important;
     border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -200,41 +201,56 @@
 
 .site-tools {
   position: fixed;
-  z-index: 1600;
-  left: 12px;
-  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 1610;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
   display: flex;
-  gap: 8px;
+  background: #101216;
+  border: 2px solid #2c3440;
+  border-bottom: none;
 }
 
 .site-tools.mobile {
-  left: 8px;
-  right: 8px;
+  left: 0;
+  right: 0;
+  transform: none;
+  width: 100%;
+  border-left: none;
+  border-right: none;
+  border-top: 2px solid #6ee7a0;
+  padding-bottom: env(safe-area-inset-bottom);
+  height: auto;
 }
 
 .tool-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   min-width: 44px;
   min-height: 44px;
-  padding: 0 14px;
-  border: 2px solid rgba(255, 255, 255, 0.16);
-  border-radius: 6px;
-  background: rgba(16, 18, 22, 0.94);
-  color: #f0f2f5;
+  height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #d5dbe3;
   font: inherit;
-  font-size: 0.95rem;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 3px 0 #000;
+  box-shadow: none;
+}
+
+.tool-button + .tool-button {
+  border-left: 1px solid #2c3440;
 }
 
 .tool-button.active {
   color: #6ee7a0;
-  border-color: rgba(110, 231, 160, 0.55);
-  background: rgba(110, 231, 160, 0.12);
 }
 
 .site-tools.mobile .tool-button {
@@ -253,7 +269,7 @@
 
 @media (max-width: 480px) {
   .control-panel.mobile.expanded {
-    max-height: min(85dvh, 680px) !important;
+    max-height: min(68dvh, 580px) !important;
   }
 
   .control-panel.mobile.expanded.trait-filter-expanded {

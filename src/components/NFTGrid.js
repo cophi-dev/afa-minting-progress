@@ -337,8 +337,6 @@ function NFTGrid() {
         updatedAt={updatedAt}
         fetchError={fetchError}
         onRetry={handleRetryMintStatus}
-        latestMints={latestMints}
-        onMintClick={openApeModal}
       />
       <div className="nft-grid-wrapper" ref={gridRef} aria-busy={showSkeleton}>
         <div
@@ -405,6 +403,8 @@ function NFTGrid() {
         mintDataLoading={mintDataLoading}
         shuffleEnabled={shuffleEnabled}
         onShuffleToggle={handleShuffleToggle}
+        latestMints={latestMints}
+        onMintClick={openApeModal}
       />
     </>
   );

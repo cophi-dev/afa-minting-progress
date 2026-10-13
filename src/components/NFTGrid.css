@@ -34,8 +34,8 @@ html, body, #root {
   position: fixed;
   left: 0;
   right: 0;
-  top: var(--site-header-offset, 196px);
-  bottom: var(--site-tools-offset, 72px);
+  top: var(--site-header-offset, 108px);
+  bottom: var(--site-tools-offset, 44px);
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
@@ -249,8 +249,8 @@ html, body, #root {
 @media (max-width: 768px) {
   .nft-grid-wrapper {
     padding: 2px;
-    top: var(--site-header-offset, 280px);
-    bottom: var(--site-tools-offset, 76px);
+    top: var(--site-header-offset, 128px);
+    bottom: var(--site-tools-offset, 44px);
     touch-action: pan-y;
   }
 

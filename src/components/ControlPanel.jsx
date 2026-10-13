@@ -15,6 +15,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TuneIcon from '@mui/icons-material/Tune';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import TraitFilter from './TraitFilter';
+import { EDITOR_HOME, LatestMints } from './SiteHeader';
 import './ControlPanel.css';
 
 const sectionLabelSx = {
@@ -110,6 +111,8 @@ const ControlPanel = ({
   docked = false,
   shuffleEnabled = false,
   onShuffleToggle,
+  latestMints = [],
+  onMintClick,
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -134,10 +137,7 @@ const ControlPanel = ({
     }
 
     const apply = () => {
-      document.documentElement.style.setProperty(
-        '--site-tools-offset',
-        `${el.offsetHeight + 16}px`
-      );
+      document.documentElement.style.setProperty('--site-tools-offset', `${el.offsetHeight}px`);
     };
 
     apply();
@@ -170,13 +170,13 @@ const ControlPanel = ({
   };
 
   const openMobilePanel = () => {
-    setIsExpanded(true);
+    setIsExpanded((open) => !open);
     onTraitFilterOpen?.();
   };
   const closeMobilePanel = () => setIsExpanded(false);
 
   const openDesktopPanel = () => {
-    setIsMinimized(false);
+    setIsMinimized((minimized) => !minimized);
     onTraitFilterOpen?.();
   };
 
@@ -201,7 +201,7 @@ const ControlPanel = ({
 
   const panelContent = (
     <>
-      <Box sx={{ mb: isMobile ? 2 : 1.75 }} className="control-panel-trait-section">
+      <Box sx={{ mb: isMobile ? 1 : 1.75 }} className="control-panel-trait-section">
         <TraitFilter
           catalog={traitCatalog}
           filters={traitFilters}
@@ -218,8 +218,8 @@ const ControlPanel = ({
 
       <Box
         sx={{
-          mb: isMobile ? 2 : 2,
-          pt: isMobile ? 1.5 : 1.25,
+          mb: isMobile ? 1.25 : 2,
+          pt: isMobile ? 1 : 1.25,
           borderTop: '1px solid rgba(255,255,255,0.06)',
         }}
       >
@@ -254,7 +254,7 @@ const ControlPanel = ({
         </form>
       </Box>
 
-      <Box sx={{ mb: isMobile ? 3.5 : 2.5 }}>
+      <Box sx={{ mb: isMobile ? 3 : 2.5 }}>
         <Typography
           sx={{
             ...(isMobile ? mobileSectionLabelSx : sectionLabelSx),
@@ -298,6 +298,11 @@ const ControlPanel = ({
           sx={isMobile ? mobileSwitchSx : switchSx}
         />
       </Box>
+
+      <a className="sheet-editor" href={EDITOR_HOME} target="_blank" rel="noopener noreferrer">
+        Open the editor
+      </a>
+      <LatestMints latestMints={latestMints} onMintClick={onMintClick} />
     </>
   );
 
@@ -312,36 +317,31 @@ const ControlPanel = ({
         onClick={onShuffleToggle}
         aria-pressed={shuffleEnabled}
       >
-        <ShuffleIcon sx={{ fontSize: 20 }} />
-        <span>{shuffleEnabled ? 'Shuffle on' : 'Shuffle'}</span>
+        <ShuffleIcon sx={{ fontSize: 16 }} />
+        <span>Shuffle</span>
       </button>
       <button
         type="button"
-        className="tool-button"
+        className={`tool-button${(mobile ? isExpanded : !isMinimized) ? ' active' : ''}`}
         onClick={mobile ? openMobilePanel : openDesktopPanel}
         aria-haspopup={mobile ? 'dialog' : undefined}
       >
-        <TuneIcon sx={{ fontSize: 20 }} />
+        <TuneIcon sx={{ fontSize: 16 }} />
         <span>Controls{activeTraitCount > 0 ? ` (${activeTraitCount})` : ''}</span>
       </button>
     </div>
   );
 
-  if (isMobile && !isExpanded && !hidden) {
-    return renderCollapsedControls({ mobile: true });
-  }
-
-  if (!isMobile && isMinimized) {
-    return renderCollapsedControls();
-  }
-
-  if (isMobile && hidden) {
+  if (hidden) {
     return null;
   }
 
+  const panelOpen = isMobile ? isExpanded : !isMinimized;
+
   return (
     <>
-      {isMobile && isExpanded && (
+      {renderCollapsedControls({ mobile: isMobile })}
+      {panelOpen && isMobile && (
         <Box
           className="control-panel-backdrop"
           onClick={closeMobilePanel}
@@ -356,39 +356,35 @@ const ControlPanel = ({
           aria-label="Close controls"
         />
       )}
+      {panelOpen && (
       <Paper
       className={`control-panel ${isMobile ? 'mobile' : 'desktop'}${docked ? ' docked' : ''}${isMobile ? ' expanded' : ''}${
         traitFilterExpanded ? ' trait-filter-expanded' : ''
-      }${hidden ? ' hidden-for-modal' : ''}`}
+      }`}
       role={isMobile ? 'dialog' : undefined}
       aria-modal={isMobile ? true : undefined}
       aria-label={isMobile ? 'Controls' : undefined}
       elevation={0}
       sx={{
         position: docked ? 'relative' : 'fixed',
-        top: isMobile ? 'auto' : 'calc(var(--site-header-offset, 180px) + 12px)',
-        bottom: isMobile ? 0 : 'auto',
-        right: isMobile ? 0 : 14,
+        top: isMobile ? 'auto' : 'calc(var(--site-header-offset, 108px) + 8px)',
+        bottom: isMobile ? 'var(--site-tools-offset, 44px)' : 'auto',
+        right: isMobile ? 0 : 8,
         left: isMobile ? 0 : 'auto',
-        width: isMobile ? '100%' : 320,
+        width: isMobile ? '100%' : 300,
         maxHeight: isMobile
-          ? 'min(85dvh, 680px)'
-          : 'calc(100vh - var(--site-header-offset, 180px) - 24px)',
+          ? 'min(68dvh, 580px)'
+          : 'calc(100vh - var(--site-header-offset, 108px) - var(--site-tools-offset, 44px) - 24px)',
         overflow: 'auto',
-        bgcolor: 'rgba(16, 18, 22, 0.92)',
-        backdropFilter: 'blur(18px)',
-        WebkitBackdropFilter: 'blur(18px)',
-        border: isMobile ? 'none' : '1px solid rgba(255, 255, 255, 0.1)',
-        borderTop: isMobile ? '1px solid rgba(255, 255, 255, 0.1)' : undefined,
+        bgcolor: '#101216',
+        border: '2px solid #6ee7a0',
+        borderLeft: isMobile ? 'none' : undefined,
+        borderRight: isMobile ? 'none' : undefined,
+        borderBottom: isMobile ? 'none' : undefined,
         zIndex: docked ? 'auto' : 1600,
-        transition: 'max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s ease',
-        borderRadius: isMobile ? '16px 16px 0 0' : '14px',
-        boxShadow: isMobile
-          ? '0 -4px 24px rgba(0, 0, 0, 0.35)'
-          : docked
-            ? '0 8px 32px rgba(0, 0, 0, 0.4)'
-            : '0 4px 24px rgba(0, 0, 0, 0.32)',
-        paddingBottom: isMobile ? 'max(20px, env(safe-area-inset-bottom))' : 0,
+        borderRadius: 0,
+        boxShadow: isMobile ? 'none' : '4px 4px 0 #000',
+        paddingBottom: 0,
       }}
     >
       <Box
@@ -396,7 +392,7 @@ const ControlPanel = ({
         sx={{
           px: isMobile ? 1.5 : 1.75,
           pt: isMobile ? 0.5 : 1.5,
-          pb: isMobile ? 2.5 : 1.5,
+          pb: isMobile ? 1 : 1.5,
         }}
       >
         {isMobile && <Box className="control-panel-drag-handle" aria-hidden />}
@@ -407,8 +403,8 @@ const ControlPanel = ({
             alignItems: 'center',
             justifyContent: 'space-between',
             width: '100%',
-            mb: 1.25,
-            minHeight: isMobile ? 40 : 28,
+            mb: isMobile ? 0.5 : 1.25,
+            minHeight: isMobile ? 44 : 28,
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
@@ -471,6 +467,7 @@ const ControlPanel = ({
         <Box sx={{ pb: isMobile ? 0.5 : 0 }}>{panelContent}</Box>
       </Box>
     </Paper>
+      )}
     </>
   );
 };
