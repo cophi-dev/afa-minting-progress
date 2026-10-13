@@ -3,21 +3,23 @@
  * Download hi-res minted AFA images from IPFS into public/hires/.
  * Run after new mints: npm run sync-minted-hires
  *
- * Requires REACT_APP_ETHERSCAN_API_KEY in .env (or env).
+ * Requires ETHERSCAN_API_KEY in .env (or env). REACT_APP_ETHERSCAN_API_KEY
+ * is still read so older local env files keep working. That name must not
+ * be set on Vercel — the site reads the key only on the server.
  * Skips tokens that already have a fresh hires/webp unless --force.
  */
 import fs from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
+import { fetchMintedTokenIds } from '../lib/mintStatus.js';
 
 const ROOT = process.cwd();
 const HIRES_DIR = path.join(ROOT, 'public', 'hires');
 const MANIFEST_PATH = path.join(ROOT, 'src', 'data', 'hires_manifest.json');
 const CID_PATH = path.join(ROOT, 'src', 'data', 'image_cids.json');
-const CONTRACT_ADDRESS = '0xfAa0e99EF34Eae8b288CFEeAEa4BF4f5B5f2eaE7';
-const ETHERSCAN_BASE = 'https://api.etherscan.io/v2/api';
 
-const IPFS_GATEWAYS = [
+const ipfsGateways = () => [
+  process.env.VITE_IPFS_GATEWAY,
   process.env.REACT_APP_IPFS_GATEWAY,
   'https://ipfs.io/ipfs',
   'https://w3s.link/ipfs',
@@ -43,36 +45,6 @@ const loadEnvFile = async () => {
   }
 };
 
-const fetchMintedTokenIds = async (apiKey) => {
-  const params = new URLSearchParams({
-    module: 'account',
-    action: 'tokennfttx',
-    contractaddress: CONTRACT_ADDRESS,
-    page: '1',
-    offset: '10000',
-    startblock: '0',
-    endblock: '999999999',
-    sort: 'asc',
-    chainid: '1',
-    apikey: apiKey,
-  });
-
-  const response = await fetch(`${ETHERSCAN_BASE}?${params}`);
-  const data = await response.json();
-
-  if (data.status !== '1' || !Array.isArray(data.result)) {
-    throw new Error(data.message || data.result || 'Etherscan API error');
-  }
-
-  const minted = new Set();
-  data.result.forEach((tx) => {
-    if (!tx?.tokenID) return;
-    minted.add(String(parseInt(tx.tokenID, 10)));
-  });
-
-  return [...minted].sort((a, b) => Number(a) - Number(b));
-};
-
 const sleep = (ms) => new Promise((resolve) => {
   setTimeout(resolve, ms);
 });
@@ -80,7 +52,7 @@ const sleep = (ms) => new Promise((resolve) => {
 const downloadFromIpfs = async (cid) => {
   let lastError = null;
 
-  for (const gateway of IPFS_GATEWAYS) {
+  for (const gateway of ipfsGateways()) {
     const url = `${gateway}/${cid}`;
 
     for (let attempt = 0; attempt < MAX_RETRIES; attempt += 1) {
@@ -160,9 +132,9 @@ const main = async () => {
   const { force, limit } = parseArgs();
   await loadEnvFile();
 
-  const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY?.trim();
+  const apiKey = (process.env.ETHERSCAN_API_KEY || process.env.REACT_APP_ETHERSCAN_API_KEY || '').trim();
   if (!apiKey) {
-    throw new Error('Missing REACT_APP_ETHERSCAN_API_KEY in .env or environment');
+    throw new Error('Missing ETHERSCAN_API_KEY in .env or environment');
   }
 
   await fs.mkdir(HIRES_DIR, { recursive: true });

@@ -6,7 +6,7 @@ const INTERVAL_MS = 650;
 export function startFaviconAnimation() {
   if (typeof document === 'undefined') return undefined;
 
-  const publicUrl = process.env.PUBLIC_URL || '';
+  const publicUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
   const frameBase = `${publicUrl}/favicon-frames`;
 
   let link = document.querySelector('link[rel~="icon"][data-animated="true"]');

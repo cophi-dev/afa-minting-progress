@@ -32,6 +32,9 @@ const cachedMint = loadMintCache();
 
 function NFTGrid() {
   const [mintedStatus, setMintedStatus] = useState(() => cachedMint?.statuses ?? new Map());
+  const [mintedCountFromChain, setMintedCountFromChain] = useState(() => (
+    Number.isFinite(cachedMint?.mintedCount) ? cachedMint.mintedCount : null
+  ));
   const [mintDataLoading, setMintDataLoading] = useState(!cachedMint);
   const [latestMints, setLatestMints] = useState(() => cachedMint?.latestMints ?? []);
   const [fetchError, setFetchError] = useState(null);
@@ -53,7 +56,7 @@ function NFTGrid() {
   const gridRef = useRef(null);
   const mintedStatusRef = useRef(mintedStatus);
   const rangeRef = useRef(initialLayout.visibleRange);
-  const mintedCount = mintedStatus.size;
+  const mintedCount = mintedCountFromChain ?? mintedStatus.size;
 
   mintedStatusRef.current = mintedStatus;
 
@@ -111,6 +114,7 @@ function NFTGrid() {
         if (cancelled || !result) return;
         setLatestMints(result.latestMints);
         setMintedStatus(result.statuses);
+        setMintedCountFromChain(result.mintedCount);
         setFetchError(null);
       })
       .catch((error) => {
