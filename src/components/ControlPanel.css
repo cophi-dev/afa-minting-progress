@@ -1,5 +1,18 @@
 .control-panel {
-  border-radius: 12px !important;
+  border-radius: 16px !important;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.control-panel,
+.control-panel .MuiTypography-root,
+.control-panel .MuiInputBase-root,
+.control-panel .MuiSlider-markLabel,
+.control-panel button {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.control-panel .MuiOutlinedInput-root {
+  border-radius: 12px;
 }
 
 .control-panel.desktop.docked,
@@ -49,7 +62,8 @@
 }
 
 .control-panel.mobile.expanded {
-  max-height: min(52dvh, 380px) !important;
+  max-height: min(68dvh, 580px) !important;
+  border-radius: 16px 16px 0 0 !important;
 }
 
 .control-panel.mobile.expanded.trait-filter-expanded {
@@ -153,10 +167,13 @@
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    bottom: 0 !important;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.45) !important;
-    border: none !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    bottom: var(--site-tools-offset, 44px) !important;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.38) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-bottom: none !important;
+    background: rgba(16, 18, 22, 0.82) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     animation: slideUp 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     touch-action: manipulation;
   }
@@ -166,8 +183,8 @@
   }
 
   .control-panel .MuiIconButton-root {
-    min-width: 40px !important;
-    min-height: 40px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
 
   .control-panel .MuiInputBase-root {
@@ -198,9 +215,83 @@
   }
 }
 
+.site-tools {
+  position: fixed;
+  z-index: 1610;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(16, 18, 22, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.site-tools.mobile {
+  left: 12px;
+  right: 12px;
+  transform: none;
+  width: auto;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  border-radius: 16px;
+}
+
+.tool-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(240, 242, 245, 0.88);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.tool-button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.tool-button.active {
+  background: rgba(110, 231, 160, 0.16);
+  color: #d8ffe9;
+}
+
+.site-tools.mobile .tool-button {
+  flex: 1;
+}
+
+.control-panel-bayc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  margin-top: 4px;
+  padding-bottom: 8px;
+}
+
 @media (max-width: 480px) {
   .control-panel.mobile.expanded {
-    max-height: min(54dvh, 360px) !important;
+    max-height: min(68dvh, 580px) !important;
   }
 
   .control-panel.mobile.expanded.trait-filter-expanded {

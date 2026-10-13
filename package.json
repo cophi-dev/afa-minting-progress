@@ -2,50 +2,33 @@
   "name": "afa-minting-progress",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^5.16.13",
     "@mui/material": "^5.16.13",
+    "@vercel/analytics": "^2.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@vercel/analytics": "^2.0.1",
-    "ajv": "^8.17.1",
-    "ethers": "^5.7.2",
+    "@vitejs/plugin-react": "^4.7.0",
     "gifenc": "^1.0.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-draggable": "^4.4.6",
-    "react-scripts": "5.0.1",
     "sharp": "^0.34.4",
-    "web-vitals": "^2.1.4"
+    "vite": "^6.3.6",
+    "vitest": "^3.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "generate-webp": "node scripts/generate-webp.mjs",
     "generate-favicon": "node scripts/generate-favicon.mjs",
     "sync-minted-hires": "node scripts/sync-minted-hires.mjs",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "test": "vitest run"
   }
 }

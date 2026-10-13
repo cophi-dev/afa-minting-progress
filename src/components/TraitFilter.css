@@ -1,5 +1,5 @@
 .trait-filter-card {
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   transition:
@@ -30,7 +30,7 @@
   color: inherit;
   text-align: left;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 12px;
   transition: background 0.18s ease;
   -webkit-tap-highlight-color: transparent;
 }
@@ -236,7 +236,7 @@
   .trait-filter-icon-wrap {
     width: 36px;
     height: 36px;
-    border-radius: 10px;
+    border-radius: 12px;
   }
 
   .trait-filter-type-btn {
