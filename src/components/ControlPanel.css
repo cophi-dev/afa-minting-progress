@@ -49,7 +49,7 @@
 }
 
 .control-panel.mobile.expanded {
-  max-height: min(52dvh, 380px) !important;
+  max-height: min(85dvh, 680px) !important;
 }
 
 .control-panel.mobile.expanded.trait-filter-expanded {
@@ -166,8 +166,8 @@
   }
 
   .control-panel .MuiIconButton-root {
-    min-width: 40px !important;
-    min-height: 40px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
 
   .control-panel .MuiInputBase-root {
@@ -198,9 +198,62 @@
   }
 }
 
+.site-tools {
+  position: fixed;
+  z-index: 1600;
+  left: 12px;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  display: flex;
+  gap: 8px;
+}
+
+.site-tools.mobile {
+  left: 8px;
+  right: 8px;
+}
+
+.tool-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  border-radius: 6px;
+  background: rgba(16, 18, 22, 0.94);
+  color: #f0f2f5;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #000;
+}
+
+.tool-button.active {
+  color: #6ee7a0;
+  border-color: rgba(110, 231, 160, 0.55);
+  background: rgba(110, 231, 160, 0.12);
+}
+
+.site-tools.mobile .tool-button {
+  flex: 1;
+}
+
+.control-panel-bayc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  margin-top: 4px;
+  padding-bottom: 8px;
+}
+
 @media (max-width: 480px) {
   .control-panel.mobile.expanded {
-    max-height: min(54dvh, 360px) !important;
+    max-height: min(85dvh, 680px) !important;
   }
 
   .control-panel.mobile.expanded.trait-filter-expanded {

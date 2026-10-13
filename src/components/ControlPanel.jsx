@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   TextField,
   Slider,
   Switch,
-  FormControlLabel,
   Paper,
   Typography,
   IconButton,
-  Tooltip,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TuneIcon from '@mui/icons-material/Tune';
@@ -56,9 +53,9 @@ const sliderSx = {
     borderRadius: '50%',
   },
   '& .MuiSlider-markLabel': {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: '9px',
-    fontWeight: 500,
+    color: 'rgba(255, 255, 255, 0.92)',
+    fontSize: '12px',
+    fontWeight: 700,
   },
 };
 
@@ -75,7 +72,12 @@ const mobileSliderSx = {
     '&.Mui-active': { boxShadow: '0 0 0 9px rgba(110, 231, 160, 0.24)' },
   },
   '& .MuiSlider-mark': { width: 4, height: 4 },
-  '& .MuiSlider-markLabel': { fontSize: '9px', mt: 0.5 },
+  '& .MuiSlider-markLabel': {
+    color: 'rgba(255, 255, 255, 0.92)',
+    fontSize: '13px',
+    fontWeight: 700,
+    mt: 0.5,
+  },
 };
 
 const switchSx = {
@@ -87,24 +89,7 @@ const switchSx = {
 
 const mobileSwitchSx = {
   ...switchSx,
-  transform: 'scale(0.92)',
-  mr: -0.25,
 };
-
-const triggerButtonSx = (active = false) => ({
-  bgcolor: active ? 'rgba(110, 231, 160, 0.12)' : 'rgba(16, 18, 22, 0.92)',
-  backdropFilter: 'blur(14px)',
-  border: active
-    ? '1px solid rgba(110, 231, 160, 0.35)'
-    : '1px solid rgba(255, 255, 255, 0.1)',
-  color: active ? '#6ee7a0' : 'rgba(255,255,255,0.75)',
-  transition: 'all 0.2s ease',
-  '&:hover': {
-    bgcolor: active ? 'rgba(110, 231, 160, 0.18)' : 'rgba(24, 26, 30, 0.96)',
-    color: active ? '#6ee7a0' : '#fff',
-    borderColor: active ? 'rgba(110, 231, 160, 0.45)' : 'rgba(255,255,255,0.16)',
-  },
-});
 
 const ControlPanel = ({
   onTokenSearch,
@@ -130,6 +115,7 @@ const ControlPanel = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMinimized, setIsMinimized] = useState(true);
   const [traitFilterExpanded, setTraitFilterExpanded] = useState(false);
+  const toolsRef = useRef(null);
 
   const activeTraitCount = Object.values(traitFilters).reduce(
     (sum, values) => sum + (values?.length ?? 0),
@@ -139,6 +125,29 @@ const ControlPanel = ({
   useEffect(() => {
     setIsExpanded(false);
   }, [isMobile]);
+
+  useEffect(() => {
+    const el = toolsRef.current;
+    if (!el) {
+      document.documentElement.style.setProperty('--site-tools-offset', '0px');
+      return undefined;
+    }
+
+    const apply = () => {
+      document.documentElement.style.setProperty(
+        '--site-tools-offset',
+        `${el.offsetHeight + 16}px`
+      );
+    };
+
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.setProperty('--site-tools-offset', '0px');
+    };
+  }, [isMobile, isExpanded, isMinimized, hidden]);
 
   useEffect(() => {
     if (!isMobile || !isExpanded) return undefined;
@@ -245,7 +254,7 @@ const ControlPanel = ({
         </form>
       </Box>
 
-      <Box sx={{ mb: isMobile ? 2 : 1.75 }}>
+      <Box sx={{ mb: isMobile ? 3.5 : 2.5 }}>
         <Typography
           sx={{
             ...(isMobile ? mobileSectionLabelSx : sectionLabelSx),
@@ -273,166 +282,50 @@ const ControlPanel = ({
         />
       </Box>
 
-      {isMobile ? (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            minHeight: 40,
-            px: 0,
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-            <VisibilityIcon sx={{ fontSize: 16, color: 'rgba(255,255,255,0.45)' }} />
-            <Typography sx={{ fontSize: '0.8125rem', color: '#fff', fontWeight: 500 }}>
-              Show Original BAYC
-            </Typography>
-          </Box>
-          <Switch
-            checked={showBayc}
-            onChange={(e) => onShowBayc(e.target.checked)}
-            sx={mobileSwitchSx}
-          />
+      <Box className="control-panel-bayc-row">
+        <Box sx={{ minWidth: 0, pr: 1 }}>
+          <Typography sx={{ fontSize: isMobile ? '1rem' : '0.9rem', color: '#fff', fontWeight: 700, lineHeight: 1.3 }}>
+            Show original Bored Apes
+          </Typography>
+          <Typography sx={{ mt: 0.25, fontSize: '0.8rem', color: 'rgba(255,255,255,0.78)', lineHeight: 1.35 }}>
+            Use the original ape pictures instead of Ape Facing Ape art.
+          </Typography>
         </Box>
-      ) : (
-        <FormControlLabel
-          control={
-            <Switch
-              checked={showBayc}
-              onChange={(e) => onShowBayc(e.target.checked)}
-              size="small"
-              sx={switchSx}
-            />
-          }
-          label={
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <VisibilityIcon sx={{ fontSize: 15, color: 'rgba(255,255,255,0.45)' }} />
-              <Typography sx={{ fontSize: '0.8125rem', fontWeight: 500, color: '#fff' }}>
-                Show Original BAYC
-              </Typography>
-            </Box>
-          }
-          sx={{ m: 0, color: '#fff' }}
+        <Switch
+          checked={showBayc}
+          onChange={(e) => onShowBayc(e.target.checked)}
+          inputProps={{ 'aria-label': 'Show original Bored Apes' }}
+          sx={isMobile ? mobileSwitchSx : switchSx}
         />
-      )}
+      </Box>
     </>
   );
 
-  const mobileFabBadges =
-    isMobile && !isExpanded ? (
-      <Box className="control-panel-fab-badges" aria-hidden>
-        {activeTraitCount > 0 && (
-          <Box className="control-panel-fab-dot accent" title={`${activeTraitCount} trait filters`} />
-        )}
-        {showBayc && <Box className="control-panel-fab-dot" title="BAYC overlay on" />}
-      </Box>
-    ) : null;
-
-  const renderCollapsedControls = ({ mobile = false } = {}) => {
-    const buttonSize = mobile ? 52 : (docked ? 44 : 36);
-    const iconSize = mobile ? 22 : (docked ? 22 : 18);
-    const borderRadius = mobile ? '14px' : (docked ? '12px' : '10px');
-    const sharedButtonSx = {
-      width: buttonSize,
-      height: buttonSize,
-      borderRadius,
-      flexShrink: 0,
-      ...triggerButtonSx(false),
-    };
-    const activeButtonSx = {
-      ...sharedButtonSx,
-      ...triggerButtonSx(true),
-    };
-
-    return (
-      <Box
-        className={`control-panel-collapsed${mobile ? ' mobile' : ''}${docked ? ' docked' : ''}`}
-        sx={
-          mobile
-            ? {
-                position: 'fixed',
-                right: 16,
-                bottom: 'max(16px, env(safe-area-inset-bottom, 0px))',
-                zIndex: 1600,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }
-            : {
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.75,
-                ...(docked
-                  ? {}
-                  : {
-                      position: 'fixed',
-                      top: 14,
-                      right: 14,
-                      zIndex: 1600,
-                    }),
-              }
-        }
+  const renderCollapsedControls = ({ mobile = false } = {}) => (
+    <div
+      ref={toolsRef}
+      className={`site-tools${mobile ? ' mobile' : ''}`}
+    >
+      <button
+        type="button"
+        className={`tool-button${shuffleEnabled ? ' active' : ''}`}
+        onClick={onShuffleToggle}
+        aria-pressed={shuffleEnabled}
       >
-        <Tooltip
-          title={shuffleEnabled ? 'Shuffle on' : 'Shuffle grid'}
-          placement={mobile ? 'top' : (docked ? 'top' : 'left')}
-        >
-          <IconButton
-            className="control-panel-shuffle-trigger"
-            onClick={onShuffleToggle}
-            aria-label={shuffleEnabled ? 'Disable shuffle' : 'Enable shuffle'}
-            aria-pressed={shuffleEnabled}
-            sx={shuffleEnabled ? activeButtonSx : sharedButtonSx}
-          >
-            <ShuffleIcon sx={{ fontSize: iconSize }} />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip
-          title={
-            activeTraitCount > 0
-              ? `Controls · ${activeTraitCount} trait filter${activeTraitCount === 1 ? '' : 's'}`
-              : 'Open controls'
-          }
-          placement={mobile ? 'top' : (docked ? 'top' : 'left')}
-        >
-          <IconButton
-            className={`control-panel-trigger${mobile ? ' control-panel-fab' : ''}`}
-            onClick={mobile ? openMobilePanel : openDesktopPanel}
-            aria-label="Open controls"
-            aria-haspopup={mobile ? 'dialog' : undefined}
-            sx={{
-              ...sharedButtonSx,
-              position: 'relative',
-              boxShadow: mobile
-                ? '0 4px 20px rgba(0,0,0,0.35)'
-                : docked
-                  ? '0 8px 32px rgba(0,0,0,0.4)'
-                  : '0 2px 12px rgba(0,0,0,0.28)',
-              '&:hover': {
-                ...sharedButtonSx['&:hover'],
-                boxShadow: '0 6px 24px rgba(0,0,0,0.42)',
-              },
-              '&:active': mobile
-                ? {
-                    transform: 'scale(0.96)',
-                  }
-                : undefined,
-            }}
-          >
-            <TuneIcon sx={{ fontSize: iconSize }} />
-            {mobile ? mobileFabBadges : null}
-            {!mobile && activeTraitCount > 0 && (
-              <Box className="control-panel-trigger-badge" aria-hidden>
-                {activeTraitCount > 9 ? '9+' : activeTraitCount}
-              </Box>
-            )}
-          </IconButton>
-        </Tooltip>
-      </Box>
-    );
-  };
+        <ShuffleIcon sx={{ fontSize: 20 }} />
+        <span>{shuffleEnabled ? 'Shuffle on' : 'Shuffle'}</span>
+      </button>
+      <button
+        type="button"
+        className="tool-button"
+        onClick={mobile ? openMobilePanel : openDesktopPanel}
+        aria-haspopup={mobile ? 'dialog' : undefined}
+      >
+        <TuneIcon sx={{ fontSize: 20 }} />
+        <span>Controls{activeTraitCount > 0 ? ` (${activeTraitCount})` : ''}</span>
+      </button>
+    </div>
+  );
 
   if (isMobile && !isExpanded && !hidden) {
     return renderCollapsedControls({ mobile: true });
@@ -473,18 +366,14 @@ const ControlPanel = ({
       elevation={0}
       sx={{
         position: docked ? 'relative' : 'fixed',
-        top: isMobile ? 'auto' : docked ? 'auto' : 14,
+        top: isMobile ? 'auto' : 'calc(var(--site-header-offset, 180px) + 12px)',
         bottom: isMobile ? 0 : 'auto',
-        right: isMobile ? 0 : docked ? 'auto' : 14,
+        right: isMobile ? 0 : 14,
         left: isMobile ? 0 : 'auto',
-        width: isMobile ? '100%' : docked ? 280 : 300,
+        width: isMobile ? '100%' : 320,
         maxHeight: isMobile
-          ? traitFilterExpanded
-            ? 'min(78dvh, 560px)'
-            : 'min(52dvh, 380px)'
-          : docked
-            ? 'min(420px, calc(100vh - 40px))'
-            : 'calc(100vh - 28px)',
+          ? 'min(85dvh, 680px)'
+          : 'calc(100vh - var(--site-header-offset, 180px) - 24px)',
         overflow: 'auto',
         bgcolor: 'rgba(16, 18, 22, 0.92)',
         backdropFilter: 'blur(18px)',
@@ -499,7 +388,7 @@ const ControlPanel = ({
           : docked
             ? '0 8px 32px rgba(0, 0, 0, 0.4)'
             : '0 4px 24px rgba(0, 0, 0, 0.32)',
-        paddingBottom: isMobile ? 'max(8px, env(safe-area-inset-bottom))' : 0,
+        paddingBottom: isMobile ? 'max(20px, env(safe-area-inset-bottom))' : 0,
       }}
     >
       <Box
@@ -507,7 +396,7 @@ const ControlPanel = ({
         sx={{
           px: isMobile ? 1.5 : 1.75,
           pt: isMobile ? 0.5 : 1.5,
-          pb: isMobile ? 0.75 : 1.5,
+          pb: isMobile ? 2.5 : 1.5,
         }}
       >
         {isMobile && <Box className="control-panel-drag-handle" aria-hidden />}
@@ -568,8 +457,8 @@ const ControlPanel = ({
               size="small"
               sx={{
                 color: 'rgba(255,255,255,0.55)',
-                width: 40,
-                height: 40,
+                width: 44,
+                height: 44,
                 flexShrink: 0,
                 '&:hover': { color: '#fff', bgcolor: 'rgba(255,255,255,0.08)' },
               }}

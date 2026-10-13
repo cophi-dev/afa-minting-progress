@@ -32,7 +32,10 @@ html, body, #root {
 /* Scroll container */
 .nft-grid-wrapper {
   position: fixed;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: var(--site-header-offset, 196px);
+  bottom: var(--site-tools-offset, 72px);
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
@@ -70,13 +73,13 @@ html, body, #root {
 }
 
 .nft-grid-visible {
-  contain: layout style paint;
+  contain: layout style;
 }
 
 /* Cells */
 .nft-cell {
   position: relative;
-  contain: layout style paint;
+  contain: layout style;
   cursor: pointer;
   overflow: hidden;
   background: var(--bg-secondary);
@@ -110,9 +113,42 @@ html, body, #root {
   transform: scale(calc(1 + var(--cell-zoom, 16) * 0.00075));
 }
 
+.cell-tooltip {
+  position: fixed;
+  z-index: 1500;
+  padding: 3px 6px;
+  background: #101216;
+  color: #f4fff8;
+  border: 2px solid #6ee7a0;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 3px 3px 0 #000;
+}
+
+.nft-cell.skeleton {
+  cursor: default;
+  background: linear-gradient(90deg, #161a20 0%, #2a3140 45%, #161a20 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.1s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nft-cell.skeleton {
+    animation: none;
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .nft-cell:hover {
-    z-index: 2;
+    z-index: 5;
     outline: 2px solid var(--accent);
     outline-offset: -1px;
     border-radius: 2px;
@@ -213,6 +249,8 @@ html, body, #root {
 @media (max-width: 768px) {
   .nft-grid-wrapper {
     padding: 2px;
+    top: var(--site-header-offset, 280px);
+    bottom: var(--site-tools-offset, 76px);
     touch-action: pan-y;
   }
 
