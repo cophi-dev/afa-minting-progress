@@ -1,5 +1,5 @@
-import { BLOB_PATHNAME, KV_HASH_KEY, KV_LAST_BLOCK_KEY } from './constants';
-import { chunk } from './chunk';
+import { BLOB_PATHNAME, KV_HASH_KEY, KV_LAST_BLOCK_KEY } from './constants.js';
+import { chunk } from './chunk.js';
 import {
   emptyMintState,
   mergeMintRecords,
@@ -7,7 +7,7 @@ import {
   parseStoredState,
   stateFromKv,
   toMintRecord,
-} from './mintRecords';
+} from './mintRecords.js';
 
 const storeError = (message, statusCode) => {
   const error = new Error(message);

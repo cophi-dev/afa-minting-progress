@@ -1,4 +1,4 @@
-import { CONTRACT_ADDRESS, DEPLOY_BLOCK, ZERO_ADDRESS } from './constants';
+import { CONTRACT_ADDRESS, DEPLOY_BLOCK, ZERO_ADDRESS } from './constants.js';
 
 export const resolveDeployBlock = (env = process.env) => {
   const raw = env.MINT_DEPLOY_BLOCK;
