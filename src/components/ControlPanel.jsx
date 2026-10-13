@@ -112,6 +112,7 @@ const ControlPanel = ({
   onShuffleToggle,
   latestMints = [],
   onMintClick,
+  showTraitFilter = true,
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -201,20 +202,22 @@ const ControlPanel = ({
 
   const panelContent = (
     <>
-      <Box sx={{ mb: isMobile ? 1 : 1.75 }} className="control-panel-trait-section">
-        <TraitFilter
-          catalog={traitCatalog}
-          filters={traitFilters}
-          onChange={onTraitFiltersChange}
-          matchCount={filteredMatchCount}
-          mintedCount={filteredMintedCount}
-          mintDataLoading={mintDataLoading}
-          loading={traitCatalogLoading}
-          isMobile={isMobile}
-          onExpand={onTraitFilterOpen}
-          onExpandedChange={setTraitFilterExpanded}
-        />
-      </Box>
+      {showTraitFilter && (
+        <Box sx={{ mb: isMobile ? 1 : 1.75 }} className="control-panel-trait-section">
+          <TraitFilter
+            catalog={traitCatalog}
+            filters={traitFilters}
+            onChange={onTraitFiltersChange}
+            matchCount={filteredMatchCount}
+            mintedCount={filteredMintedCount}
+            mintDataLoading={mintDataLoading}
+            loading={traitCatalogLoading}
+            isMobile={isMobile}
+            onExpand={onTraitFilterOpen}
+            onExpandedChange={setTraitFilterExpanded}
+          />
+        </Box>
+      )}
 
       <Box
         sx={{

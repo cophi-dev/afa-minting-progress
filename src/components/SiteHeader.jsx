@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AFA_CLAIM_URL } from '../constants/editor';
 import { setAfaIpfsImageSrc, tryNextAfaIpfsGateway } from '../utils/imageUrls';
 import './SiteHeader.css';
 
@@ -119,16 +118,6 @@ const SiteHeader = ({
       <div className="site-header-top">
         <h1 className="site-title">AFA Mint Progress</h1>
         <div className="site-header-actions">
-          <a
-            className="mint-cta"
-            href={AFA_CLAIM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Mint on apefacingapes.com"
-          >
-            <span className="mint-cta-full">Mint on apefacingapes.com</span>
-            <span className="mint-cta-short">Mint</span>
-          </a>
           <a
             className="editor-link"
             href={EDITOR_HOME}
