@@ -19,12 +19,11 @@ import { EDITOR_HOME, LatestMints } from './SiteHeader';
 import './ControlPanel.css';
 
 const sectionLabelSx = {
-  color: 'rgba(255,255,255,0.45)',
+  color: 'rgba(255,255,255,0.55)',
   mb: 0.75,
-  fontSize: '0.65rem',
+  fontSize: '0.75rem',
   fontWeight: 600,
-  letterSpacing: '0.06em',
-  textTransform: 'uppercase',
+  letterSpacing: '0.01em',
 };
 
 const mobileSectionLabelSx = {
@@ -137,7 +136,8 @@ const ControlPanel = ({
     }
 
     const apply = () => {
-      document.documentElement.style.setProperty('--site-tools-offset', `${el.offsetHeight}px`);
+      const gap = parseFloat(getComputedStyle(el).bottom) || 0;
+      document.documentElement.style.setProperty('--site-tools-offset', `${el.offsetHeight + gap}px`);
     };
 
     apply();
@@ -376,14 +376,15 @@ const ControlPanel = ({
           ? 'min(68dvh, 580px)'
           : 'calc(100vh - var(--site-header-offset, 108px) - var(--site-tools-offset, 44px) - 24px)',
         overflow: 'auto',
-        bgcolor: '#101216',
-        border: '2px solid #6ee7a0',
-        borderLeft: isMobile ? 'none' : undefined,
-        borderRight: isMobile ? 'none' : undefined,
-        borderBottom: isMobile ? 'none' : undefined,
+        bgcolor: 'rgba(16, 18, 22, 0.78)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.12)',
         zIndex: docked ? 'auto' : 1600,
-        borderRadius: 0,
-        boxShadow: isMobile ? 'none' : '4px 4px 0 #000',
+        borderRadius: isMobile ? '16px 16px 0 0' : '16px',
+        boxShadow: isMobile
+          ? '0 -12px 40px rgba(0, 0, 0, 0.38)'
+          : '0 18px 48px rgba(0, 0, 0, 0.4)',
         paddingBottom: 0,
       }}
     >
