@@ -1,6 +1,6 @@
-import { runMintBackfill } from '../lib/backfill';
-import { redactSecrets } from '../lib/redact';
-import { isAuthorizedBearer } from '../lib/signature';
+import { runMintBackfill } from '../lib/backfill.js';
+import { redactSecrets } from '../lib/redact.js';
+import { isAuthorizedBearer } from '../lib/signature.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {

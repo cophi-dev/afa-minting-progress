@@ -1,11 +1,11 @@
-import { CONTRACT_ADDRESS, MAX_TOKEN_ID } from './constants';
+import { CONTRACT_ADDRESS, MAX_TOKEN_ID } from './constants.js';
 import {
   isZeroAddress,
   normalizeAddress,
   normalizeTxHash,
   parseQuantity,
   parseTimestamp,
-} from './hex';
+} from './hex.js';
 
 const rawTokenId = (activity) => (
   activity.erc721TokenId

@@ -1,7 +1,7 @@
-import { alchemyBatch } from './alchemy';
-import { chunk } from './chunk';
-import { normalizeAddress, parseQuantity } from './hex';
-import { toMintRecord } from './mintRecords';
+import { alchemyBatch } from './alchemy.js';
+import { chunk } from './chunk.js';
+import { normalizeAddress, parseQuantity } from './hex.js';
+import { toMintRecord } from './mintRecords.js';
 
 const BATCH_SIZE = 100;
 

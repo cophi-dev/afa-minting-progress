@@ -1,7 +1,7 @@
-import { listMintRecords } from './lib/mintStore';
-import { buildMintsResponse, parseSinceBlock } from './lib/mintsResponse';
-import { redactSecrets } from './lib/redact';
-import { isAuthorizedBearer } from './lib/signature';
+import { listMintRecords } from './lib/mintStore.js';
+import { buildMintsResponse, parseSinceBlock } from './lib/mintsResponse.js';
+import { redactSecrets } from './lib/redact.js';
+import { isAuthorizedBearer } from './lib/signature.js';
 
 const send = (res, status, body, cacheControl) => {
   res.setHeader('Cache-Control', cacheControl);

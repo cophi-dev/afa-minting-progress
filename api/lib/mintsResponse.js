@@ -1,5 +1,5 @@
-import { PRIVATE_CACHE_CONTROL, PUBLIC_CACHE_CONTROL } from './constants';
-import { toApiMint } from './mintRecords';
+import { PRIVATE_CACHE_CONTROL, PUBLIC_CACHE_CONTROL } from './constants.js';
+import { toApiMint } from './mintRecords.js';
 
 export const parseSinceBlock = (value) => {
   if (value == null || value === '') return { ok: true, sinceBlock: null };

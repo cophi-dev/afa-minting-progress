@@ -1,4 +1,4 @@
-import { redactSecrets } from './redact';
+import { redactSecrets } from './redact.js';
 
 export const getAlchemyRpcUrl = (env = process.env) => {
   const explicit = env.ALCHEMY_RPC_URL?.trim();
