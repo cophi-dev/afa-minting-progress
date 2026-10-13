@@ -3,6 +3,7 @@
  * Download hi-res minted AFA images from IPFS into public/hires/.
  * Run after new mints: npm run sync-minted-hires
  *
+ * The website reads GET /api/mints. This offline sync still uses Etherscan.
  * Requires REACT_APP_ETHERSCAN_API_KEY in .env (or env).
  * Skips tokens that already have a fresh hires/webp unless --force.
  */

@@ -185,7 +185,9 @@ function NFTGrid() {
       tokenId,
       isMinted,
       owner: status?.owner ?? null,
-      mintDate: status ? new Date(status.timestamp * 1000).toISOString() : null,
+      mintDate: Number.isFinite(status?.timestamp)
+        ? new Date(status.timestamp * 1000).toISOString()
+        : null,
       image: getAfaThumbnailUrl(tokenId),
       baycImage: getBaycThumbnailUrl(tokenId),
       editorUrl: isMinted ? buildAfaEditorUrl(tokenId) : null,

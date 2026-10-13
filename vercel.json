@@ -1,4 +1,18 @@
 {
+  "crons": [
+    {
+      "path": "/api/cron/backfill",
+      "schedule": "0 0 * * *"
+    }
+  ],
+  "functions": {
+    "api/alchemy-webhook.js": {
+      "maxDuration": 30
+    },
+    "api/cron/backfill.js": {
+      "maxDuration": 60
+    }
+  },
   "redirects": [
     {
       "source": "/:path*",

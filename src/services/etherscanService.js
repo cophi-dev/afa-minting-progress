@@ -1,67 +1,47 @@
-const ETHERSCAN_API_KEY = process.env.REACT_APP_ETHERSCAN_API_KEY;
-const CONTRACT_ADDRESS = '0xfAa0e99EF34Eae8b288CFEeAEa4BF4f5B5f2eaE7';
-const ETHERSCAN_BASE = 'https://api.etherscan.io/v2/api';
+/**
+ * Public mint snapshot from GET /api/mints.
+ * The response is `{ count, minted }` where `minted` is decimal token ids.
+ */
+export const MINTS_API_URL = process.env.REACT_APP_MINTS_API_URL || '/api/mints';
 
-export const hasEtherscanApiKey = () => Boolean(ETHERSCAN_API_KEY?.trim());
+const MAX_TOKEN_ID = 9999;
 
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+export const processMintSnapshot = (data) => {
+  const minted = Array.isArray(data?.minted) ? data.minted : [];
+  const statuses = new Map();
 
-/** True when the tx is a mint (from zero address), not a secondary transfer. */
-export const isMintTransaction = (tx) => {
-  const from = tx?.from?.toLowerCase?.();
-  return from === ZERO_ADDRESS || from === '0x0';
-};
+  minted.forEach((rawId) => {
+    if (typeof rawId === 'string' && !/^\d+$/.test(rawId.trim())) return;
 
-export const getAllTransactions = async () => {
-  if (!hasEtherscanApiKey()) {
-    throw new Error('Missing REACT_APP_ETHERSCAN_API_KEY in .env — restart the dev server after adding it.');
-  }
+    const tokenId = typeof rawId === 'number' ? rawId : Number(String(rawId).trim());
+    if (!Number.isInteger(tokenId) || tokenId < 0 || tokenId > MAX_TOKEN_ID) return;
 
-  const params = new URLSearchParams({
-    module: 'account',
-    action: 'tokennfttx',
-    contractaddress: CONTRACT_ADDRESS,
-    page: '1',
-    offset: '10000',
-    startblock: '0',
-    endblock: '999999999',
-    sort: 'asc',
-    chainid: '1',
-    apikey: ETHERSCAN_API_KEY,
+    statuses.set(tokenId, {
+      owner: null,
+      timestamp: null,
+      isTransfer: false,
+    });
   });
 
-  const response = await fetch(`${ETHERSCAN_BASE}?${params}`);
-  const data = await response.json();
-
-  if (data.status !== '1') {
-    throw new Error(data.message || data.result || 'Etherscan API error');
-  }
-
-  if (!Array.isArray(data.result)) {
-    throw new Error('Unexpected Etherscan response format');
-  }
-
-  return data.result;
+  const count = Number.isInteger(data?.count) ? data.count : statuses.size;
+  return { statuses, count };
 };
 
-export const processNFTStatuses = (transactions) => {
-  const nftStatuses = new Map();
-
-  transactions.forEach((tx) => {
-    if (!tx?.tokenID) return;
-
-    const tokenId = parseInt(tx.tokenID, 10);
-    const timestamp = parseInt(tx.timeStamp, 10);
-    const existing = nftStatuses.get(tokenId);
-
-    if (!existing || timestamp >= existing.timestamp) {
-      nftStatuses.set(tokenId, {
-        owner: tx.to,
-        timestamp,
-        isTransfer: !isMintTransaction(tx),
-      });
-    }
+export const fetchMintSnapshot = async () => {
+  const response = await fetch(MINTS_API_URL, {
+    headers: { Accept: 'application/json' },
   });
 
-  return nftStatuses;
+  if (!response.ok) {
+    throw new Error(`Mint API error (${response.status})`);
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error('Mint API returned an unreadable response');
+  }
+
+  return processMintSnapshot(data);
 };

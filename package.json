@@ -11,6 +11,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/blob": "^2.8.1",
     "ajv": "^8.17.1",
     "ethers": "^5.7.2",
     "gifenc": "^1.0.3",
@@ -19,7 +20,8 @@
     "react-draggable": "^4.4.6",
     "react-scripts": "5.0.1",
     "sharp": "^0.34.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zod": "^3.25.76"
   },
   "scripts": {
     "start": "react-scripts start",

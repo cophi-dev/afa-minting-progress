@@ -20,6 +20,7 @@ const MintProgress = ({ mintedCount, latestMints, fetchError, mintDataLoading, h
   }, []);
 
   const formatDate = (timestamp) => {
+    if (!Number.isFinite(timestamp)) return '';
     const date = new Date(timestamp * 1000);
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',

@@ -71,7 +71,7 @@ const NFTCell = memo(({
       id={`nft-${tokenId}`}
       className={`nft-cell ${isMinted ? 'minted' : 'unminted'}${isSelected ? ' selected' : ''}`}
       data-token-id={tokenId}
-      title={isMinted ? `#${tokenId} — ${owner?.slice(0, 8)}…` : `#${tokenId}`}
+      title={isMinted && owner ? `#${tokenId} — ${owner.slice(0, 8)}…` : `#${tokenId}`}
       style={{ width: zoom, height: zoom, '--cell-zoom': zoom }}
     >
       <img

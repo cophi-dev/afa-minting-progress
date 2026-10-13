@@ -1,10 +1,11 @@
-import { getAllTransactions, processNFTStatuses } from './etherscanService';
+import { fetchMintSnapshot } from './etherscanService';
 import { MINT_STATUS_CACHE_KEY } from '../constants/appCache';
 
 let fetchPromise = null;
 
 const buildLatestMints = (statuses) =>
   Array.from(statuses.entries())
+    .filter(([, data]) => Number.isFinite(data?.timestamp))
     .sort((a, b) => b[1].timestamp - a[1].timestamp)
     .map(([tokenId, data]) => ({
       tokenId,
@@ -51,8 +52,7 @@ const saveMintCache = (statuses, latestMints) => {
 };
 
 const fetchMintStatus = async () => {
-  const transactions = await getAllTransactions();
-  const statuses = processNFTStatuses(transactions);
+  const { statuses } = await fetchMintSnapshot();
   const latestMints = buildLatestMints(statuses);
   saveMintCache(statuses, latestMints);
   return { statuses, latestMints };
