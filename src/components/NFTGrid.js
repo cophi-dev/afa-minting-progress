@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
-import Draggable from 'react-draggable';
-import MintProgress from './MintProgress';
+import SiteHeader from './SiteHeader';
 import ControlPanel from './ControlPanel';
 import VirtualGrid from './VirtualGrid';
 import { getAfaThumbnailUrl, getBaycThumbnailUrl, prefetchHiresManifest } from '../utils/imageUrls';
 import { loadBaycMapping, getTraitCatalog, filterTokenIds } from '../data/baycMetadata';
-import { loadMintCache, prefetchMintStatus } from '../services/mintStatusCache';
+import { loadMintCache, prefetchMintStatus, refreshMintStatus } from '../services/mintStatusCache';
 import { buildAfaEditorUrl, AFA_CLAIM_URL } from '../constants/editor';
 import {
   TOTAL_TOKENS,
@@ -19,7 +18,6 @@ import {
   shuffleTokenIds,
 } from '../utils/shuffleTokenIds';
 import './NFTGrid.css';
-import './DesktopDock.css';
 
 const ApeDetailsModal = lazy(() => import('./ApeDetailsModal'));
 
@@ -32,8 +30,12 @@ const cachedMint = loadMintCache();
 
 function NFTGrid() {
   const [mintedStatus, setMintedStatus] = useState(() => cachedMint?.statuses ?? new Map());
+  const [mintedCountFromChain, setMintedCountFromChain] = useState(() => (
+    Number.isFinite(cachedMint?.mintedCount) ? cachedMint.mintedCount : null
+  ));
   const [mintDataLoading, setMintDataLoading] = useState(!cachedMint);
   const [latestMints, setLatestMints] = useState(() => cachedMint?.latestMints ?? []);
+  const [updatedAt, setUpdatedAt] = useState(() => cachedMint?.savedAt ?? null);
   const [fetchError, setFetchError] = useState(null);
   const [selectedApe, setSelectedApe] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,6 +48,7 @@ function NFTGrid() {
   const [traitCatalogLoading, setTraitCatalogLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [cellTip, setCellTip] = useState(null);
   const [visibleRange, setVisibleRange] = useState(initialLayout.visibleRange);
   const [shuffleEnabled, setShuffleEnabled] = useState(false);
   const [shuffledTokenIds, setShuffledTokenIds] = useState(null);
@@ -53,7 +56,7 @@ function NFTGrid() {
   const gridRef = useRef(null);
   const mintedStatusRef = useRef(mintedStatus);
   const rangeRef = useRef(initialLayout.visibleRange);
-  const mintedCount = mintedStatus.size;
+  const mintedCount = mintedCountFromChain ?? mintedStatus.size;
 
   mintedStatusRef.current = mintedStatus;
 
@@ -111,14 +114,14 @@ function NFTGrid() {
         if (cancelled || !result) return;
         setLatestMints(result.latestMints);
         setMintedStatus(result.statuses);
+        setMintedCountFromChain(result.mintedCount);
+        setUpdatedAt(Date.now());
         setFetchError(null);
       })
       .catch((error) => {
         if (cancelled) return;
         console.error('Error fetching minted status:', error);
-        if (!cachedMint) {
-          setFetchError(error.message || 'Failed to load mint data');
-        }
+        setFetchError(error.message || 'Failed to load mint data');
       })
       .finally(() => {
         if (!cancelled) setMintDataLoading(false);
@@ -152,8 +155,20 @@ function NFTGrid() {
     const el = gridRef.current;
     if (!el) return undefined;
 
+    const observer = new ResizeObserver(() => {
+      syncVisibleRange(el.scrollTop, el.clientHeight || window.innerHeight);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [syncVisibleRange]);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return undefined;
+
     let rafId = null;
     const onScroll = () => {
+      setCellTip((current) => (current ? null : current));
       if (rafId) return;
       rafId = requestAnimationFrame(() => {
         rafId = null;
@@ -205,6 +220,32 @@ function NFTGrid() {
 
     openApeModal(tokenId);
   }, [openApeModal]);
+
+  const showCellTip = useCallback((event) => {
+    const cell = event.target.closest?.('[data-token-id]');
+    if (!cell) return;
+
+    const tokenId = Number(cell.dataset.tokenId);
+    if (Number.isNaN(tokenId)) return;
+
+    const minted = cell.classList.contains('minted');
+    const text = minted ? `Minted #${tokenId}` : `Not minted #${tokenId}`;
+    const rect = cell.getBoundingClientRect();
+    const width = Math.ceil(text.length * 7.2 + 16);
+    const height = 24;
+    const headerBottom = document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 0;
+    const toolsOffset = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--site-tools-offset')
+    ) || 0;
+    const toolsTop = window.innerHeight - toolsOffset;
+    let x = rect.left + rect.width / 2 - width / 2;
+    let y = rect.top + rect.height / 2 - height / 2;
+    x = Math.max(6, Math.min(x, window.innerWidth - width - 6));
+    y = Math.max(headerBottom + 4, Math.min(y, toolsTop - height - 4));
+    setCellTip((prev) => (
+      prev && prev.tokenId === tokenId && prev.x === x && prev.y === y ? prev : { tokenId, text, x, y }
+    ));
+  }, []);
 
   const handleTokenSearch = useCallback((tokenId) => {
     const el = gridRef.current;
@@ -271,12 +312,41 @@ function NFTGrid() {
     setSelectedTokenId(null);
   }, []);
 
+  const handleRetryMintStatus = useCallback(() => {
+    setMintDataLoading(true);
+    refreshMintStatus()
+      .then((result) => {
+        if (!result) return;
+        setLatestMints(result.latestMints);
+        setMintedStatus(result.statuses);
+        setMintedCountFromChain(result.mintedCount);
+        setUpdatedAt(Date.now());
+        setFetchError(null);
+      })
+      .catch((error) => {
+        setFetchError(error.message || 'Failed to load mint data');
+      })
+      .finally(() => setMintDataLoading(false));
+  }, []);
+
+  const showSkeleton = mintDataLoading && mintedStatus.size === 0;
+
   return (
     <>
-      <div className="nft-grid-wrapper" ref={gridRef}>
+      <SiteHeader
+        mintedCount={mintedCount}
+        mintDataLoading={mintDataLoading}
+        updatedAt={updatedAt}
+        fetchError={fetchError}
+        onRetry={handleRetryMintStatus}
+      />
+      <div className="nft-grid-wrapper" ref={gridRef} aria-busy={showSkeleton}>
         <div
           className={`nft-grid${filteredTokenIds ? ' filtered' : ''}${shuffleEnabled ? ' shuffled' : ''}`}
           onClick={handleGridClick}
+          onPointerOver={showCellTip}
+          onPointerDown={showCellTip}
+          onPointerLeave={() => setCellTip(null)}
           style={{
             width: gridWidth,
             height: totalRows * zoom,
@@ -298,9 +368,16 @@ function NFTGrid() {
             selectedTokenId={selectedTokenId}
             totalTokens={displayTokenCount}
             tokenIdList={displayTokenList}
+            skeleton={showSkeleton}
           />
         </div>
       </div>
+
+      {cellTip && (
+        <div className="cell-tooltip" style={{ left: cellTip.x, top: cellTip.y }}>
+          {cellTip.text}
+        </div>
+      )}
 
       <Suspense fallback={null}>
         <ApeDetailsModal
@@ -310,72 +387,27 @@ function NFTGrid() {
         />
       </Suspense>
 
-      {isMobile ? (
-        <>
-          <MintProgress
-            mintedCount={mintedCount}
-            latestMints={latestMints}
-            fetchError={fetchError}
-            mintDataLoading={mintDataLoading}
-            hidden={modalOpen}
-            onMintClick={openApeModal}
-          />
-          <ControlPanel
-            onTokenSearch={handleTokenSearch}
-            onZoomChange={handleZoomChange}
-            onShowBayc={handleShowBayc}
-            zoom={zoom}
-            showBayc={showBayc}
-            isMobile={isMobile}
-            hidden={modalOpen}
-            traitFilters={traitFilters}
-            onTraitFiltersChange={handleTraitFiltersChange}
-            traitCatalog={traitCatalog}
-            traitCatalogLoading={traitCatalogLoading}
-            onTraitFilterOpen={handleTraitFilterOpen}
-            filteredMatchCount={filteredTokenIds?.length ?? null}
-            filteredMintedCount={filteredMintedCount}
-            mintDataLoading={mintDataLoading}
-            shuffleEnabled={shuffleEnabled}
-            onShuffleToggle={handleShuffleToggle}
-          />
-        </>
-      ) : (
-        <Draggable
-          handle=".dock-drag-handle"
-          cancel=".latest-mints-list, .mint-entry, .control-panel-inner, .MuiSlider-root, .MuiSwitch-root, .MuiInputBase-root, .trait-filter"
-        >
-          <div className="desktop-dock">
-            <MintProgress
-              mintedCount={mintedCount}
-              latestMints={latestMints}
-              fetchError={fetchError}
-              mintDataLoading={mintDataLoading}
-              onMintClick={openApeModal}
-              docked
-            />
-            <ControlPanel
-              onTokenSearch={handleTokenSearch}
-              onZoomChange={handleZoomChange}
-              onShowBayc={handleShowBayc}
-              zoom={zoom}
-              showBayc={showBayc}
-              isMobile={false}
-              docked
-              traitFilters={traitFilters}
-              onTraitFiltersChange={handleTraitFiltersChange}
-              traitCatalog={traitCatalog}
-              traitCatalogLoading={traitCatalogLoading}
-              onTraitFilterOpen={handleTraitFilterOpen}
-              filteredMatchCount={filteredTokenIds?.length ?? null}
-              filteredMintedCount={filteredMintedCount}
-              mintDataLoading={mintDataLoading}
-              shuffleEnabled={shuffleEnabled}
-              onShuffleToggle={handleShuffleToggle}
-            />
-          </div>
-        </Draggable>
-      )}
+      <ControlPanel
+        onTokenSearch={handleTokenSearch}
+        onZoomChange={handleZoomChange}
+        onShowBayc={handleShowBayc}
+        zoom={zoom}
+        showBayc={showBayc}
+        isMobile={isMobile}
+        hidden={modalOpen}
+        traitFilters={traitFilters}
+        onTraitFiltersChange={handleTraitFiltersChange}
+        traitCatalog={traitCatalog}
+        traitCatalogLoading={traitCatalogLoading}
+        onTraitFilterOpen={handleTraitFilterOpen}
+        filteredMatchCount={filteredTokenIds?.length ?? null}
+        filteredMintedCount={filteredMintedCount}
+        mintDataLoading={mintDataLoading}
+        shuffleEnabled={shuffleEnabled}
+        onShuffleToggle={handleShuffleToggle}
+        latestMints={latestMints}
+        onMintClick={openApeModal}
+      />
     </>
   );
 }

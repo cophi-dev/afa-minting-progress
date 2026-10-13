@@ -1,14 +1,15 @@
 import crypto from 'crypto';
+import { vi } from 'vitest';
 import handler from '../../api/alchemy-webhook';
 import { enrichMintDrafts } from '../../api/lib/enrichMints';
 import { upsertMintRecords } from '../../api/lib/mintStore';
 
-jest.mock('../../api/lib/enrichMints', () => ({
-  enrichMintDrafts: jest.fn(),
+vi.mock('../../api/lib/enrichMints', () => ({
+  enrichMintDrafts: vi.fn(),
 }));
 
-jest.mock('../../api/lib/mintStore', () => ({
-  upsertMintRecords: jest.fn(),
+vi.mock('../../api/lib/mintStore', () => ({
+  upsertMintRecords: vi.fn(),
 }));
 
 const KEY = 'test-signing-key';

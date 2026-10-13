@@ -2,7 +2,7 @@
 
 Live mosaic of all 10,000 BAYC tokens — see which apes still need an **ApeFacingApe (AFA)** mint, shuffle the grid, open controls, and jump to claim.
 
-**Live:** [afa-mint-progress.vercel.app](https://afa-mint-progress.vercel.app)
+**Live:** [afa-progress.com](https://afa-progress.com) (same deployment as [afa-mint-progress.vercel.app](https://afa-mint-progress.vercel.app))
 
 ## Related
 
@@ -15,16 +15,39 @@ Live mosaic of all 10,000 BAYC tokens — see which apes still need an **ApeFaci
 
 ```bash
 npm install
+cp .env.example .env
+# set ETHERSCAN_API_KEY in .env
 npm start
 ```
 
+## Chain data
+
+The browser calls `/api/mint-status`. That Vercel function reads the Etherscan key from the environment and caches the JSON for about 30 seconds (`s-maxage=30`).
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `ETHERSCAN_API_KEY` | yes | Etherscan API v2 key. **Server-only.** Set it in Vercel → Settings → Environment Variables for Production and Preview. |
+| `ETH_RPC_URL` | no | Ethereum mainnet HTTPS RPC used for `totalSupply()`. Public RPCs are tried when this is unset. |
+
+Do not prefix the key with `VITE_` or `REACT_APP_` — those are bundled into the client. Remove `REACT_APP_ETHERSCAN_API_KEY` from Vercel if it is still there; the old Create React App build inlined it.
+
+The progress count is `totalSupply()` on `0xfAa0e99EF34Eae8b288CFEeAEa4BF4f5B5f2eaE7` (Ethereum mainnet). NFT transfers are paged at 1,000 rows, which is the Etherscan free-tier cap, until a short page comes back.
+
+`npm run sync-minted-hires` uses the same server-side reader. A local `.env` may still define `REACT_APP_ETHERSCAN_API_KEY` for that script; the deployed site does not.
+
+## Canonical URL
+
+`https://afa-progress.com` and `https://afa-mint-progress.vercel.app` both serve this project (identical HTML and asset hashes when checked). `www.afa-progress.com` redirects to the apex. Canonical and Open Graph tags use `https://afa-progress.com`.
+
 ## Deploy
 
-Create React App static build — deploy `build/` to Vercel or any static host.
+Vite build (`npm run build` → `build/`). Vercel also runs `api/mint-status.js`.
 
 ## Mint webhooks
 
-The site reads minted token ids from `GET /api/mints`. Alchemy NFT Activity deliveries and a daily backfill write the same store. This repo does not create the Alchemy webhook. Put secrets in the Vercel project environment, not in git.
+The grid keeps using `/api/mint-status`. Alchemy NFT Activity deliveries and a daily backfill also record mints for `GET /api/mints`. This repo does not create the Alchemy webhook. Put secrets in the Vercel project environment, not in git.
+
+The connected store is **Vercel Blob**. Set `BLOB_READ_WRITE_TOKEN` and leave the KV REST vars unset. Mints are written to a private blob named `mints.json`. If both `KV_REST_API_URL` and `KV_REST_API_TOKEN` are set, that store is used instead.
 
 ### Environment
 
@@ -33,14 +56,12 @@ The site reads minted token ids from `GET /api/mints`. Alchemy NFT Activity deli
 | `ALCHEMY_WEBHOOK_SIGNING_KEY` | Server | HMAC key for `X-Alchemy-Signature`. One key per webhook. |
 | `ALCHEMY_API_KEY` | Server | Ethereum mainnet RPC key. Used as `https://eth-mainnet.g.alchemy.com/v2/$ALCHEMY_API_KEY`. |
 | `ALCHEMY_RPC_URL` | Server | Optional full RPC URL. When set, it replaces `ALCHEMY_API_KEY`. |
-| `KV_REST_API_URL` | Server | Upstash / Vercel KV REST URL. Preferred store. |
-| `KV_REST_API_TOKEN` | Server | Upstash / Vercel KV token. Set together with the URL. |
-| `BLOB_READ_WRITE_TOKEN` | Server | Private Vercel Blob fallback. Used only when the KV pair is unset. Writes `mints.json`. |
+| `BLOB_READ_WRITE_TOKEN` | Server | Vercel Blob read/write token. Stores `mints.json` when KV is unset. |
+| `KV_REST_API_URL` | Server | Optional Upstash / Vercel KV REST URL. Used only together with the token. |
+| `KV_REST_API_TOKEN` | Server | Optional Upstash / Vercel KV token. |
 | `MINTS_SYNC_TOKEN` | Server | Bearer token for `GET /api/mints?since_block=`. |
-| `CRON_SECRET` | Server | Bearer token Vercel sends to `/api/cron/backfill`. Unset means the cron returns 401. |
+| `CRON_SECRET` | Server | Bearer token Vercel sends to `/api/cron/backfill`. The cron returns 401 without it. |
 | `MINT_DEPLOY_BLOCK` | Server | Optional backfill start when the store is empty. Default `18455169` (contract creation). |
-| `REACT_APP_MINTS_API_URL` | Client | Optional override of `/api/mints` for local UI against another host. |
-| `REACT_APP_ETHERSCAN_API_KEY` | `npm run sync-minted-hires` only | Not read by the website. |
 
 Storage is idempotent on `tx_hash:token_id`. Each record stores `token_id` (decimal), `recipient`, `tx_sender`, `block`, `timestamp`, and `tx_hash`. `tx_sender` comes from `eth_getTransactionByHash`.
 

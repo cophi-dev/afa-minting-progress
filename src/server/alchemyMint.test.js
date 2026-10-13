@@ -237,8 +237,8 @@ describe('backfill plan', () => {
       rawContract: { address: CONTRACT_ADDRESS },
       metadata: { blockTimestamp: '2023-10-29T10:12:35.000Z' },
     };
-    const call = jest.fn(async () => ({ transfers: [transfer], pageKey: '' }));
-    const enrich = jest.fn(async (drafts) => drafts.map((draft) => ({
+    const call = vi.fn(async () => ({ transfers: [transfer], pageKey: '' }));
+    const enrich = vi.fn(async (drafts) => drafts.map((draft) => ({
       token_id: draft.token_id,
       recipient: draft.recipient,
       tx_sender: sender,
@@ -248,8 +248,8 @@ describe('backfill plan', () => {
     })));
 
     let state = { lastBlock: null, mints: {} };
-    const readState = jest.fn(async () => state);
-    const upsert = jest.fn(async (records) => {
+    const readState = vi.fn(async () => state);
+    const upsert = vi.fn(async (records) => {
       state = mergeMintRecords(state, records);
       return state;
     });
@@ -290,7 +290,7 @@ describe('enrichMintDrafts', () => {
   };
 
   it('loads tx_sender with eth_getTransactionByHash and the block timestamp', async () => {
-    const batch = jest.fn(async (calls) => {
+    const batch = vi.fn(async (calls) => {
       if (calls[0].method === 'eth_getTransactionByHash') {
         return [{ from: `0x${'AB'.repeat(20)}` }];
       }
@@ -318,14 +318,14 @@ describe('enrichMintDrafts', () => {
   });
 
   it('keeps a known timestamp and still requires the transaction sender', async () => {
-    const batch = jest.fn(async () => [{ from: sender }]);
+    const batch = vi.fn(async () => [{ from: sender }]);
     const [record] = await enrichMintDrafts([{ ...draft, timestamp: 55 }], batch);
     expect(record.timestamp).toBe(55);
     expect(record.tx_sender).toBe(sender);
     expect(batch).toHaveBeenCalledTimes(1);
     expect(batch.mock.calls[0][0][0].method).toBe('eth_getTransactionByHash');
 
-    const missing = jest.fn(async () => [{ from: null }]);
+    const missing = vi.fn(async () => [{ from: null }]);
     await expect(enrichMintDrafts([draft], missing)).rejects.toThrow(/transaction sender/);
   });
 });

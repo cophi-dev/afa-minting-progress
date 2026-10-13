@@ -1,7 +1,7 @@
 import { invalidateImageCached, preloadImageCached } from './imageCache';
 
 const IPFS_GATEWAYS = [
-  process.env.REACT_APP_IPFS_GATEWAY,
+  import.meta.env.VITE_IPFS_GATEWAY,
   'https://ipfs.io/ipfs',
   'https://w3s.link/ipfs',
 ].filter(Boolean);

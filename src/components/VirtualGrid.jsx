@@ -14,6 +14,7 @@ const VirtualGrid = memo(({
   selectedTokenId,
   totalTokens = TOTAL_TOKENS,
   tokenIdList = null,
+  skeleton = false,
 }) => {
   const visibleTokenIds = useMemo(() => {
     const ids = [];
@@ -45,6 +46,17 @@ const VirtualGrid = memo(({
       }}
     >
       {visibleTokenIds.map((tokenId) => {
+        if (skeleton) {
+          return (
+            <div
+              key={tokenId}
+              className="nft-cell skeleton"
+              style={{ width: zoom, height: zoom }}
+              aria-hidden="true"
+            />
+          );
+        }
+
         const status = mintedStatus.get(tokenId);
         return (
           <NFTCell
