@@ -1,12 +1,15 @@
-export const readRawBody = async (req) => {
-  if (Buffer.isBuffer(req.body)) return req.body;
-  if (typeof req.body === 'string') return Buffer.from(req.body, 'utf8');
+const isWebRequest = (req) => req != null
+  && typeof req.text === 'function'
+  && typeof req.headers?.get === 'function';
 
-  if (req.body && typeof req.body === 'object') {
-    const error = new Error('Raw request body is unavailable');
-    error.statusCode = 500;
-    error.code = 'raw_body_unavailable';
-    throw error;
+/**
+ * Bytes Alchemy signed. Never read `req.body`: on Vercel's Node runtime that
+ * getter parses JSON and consumes the stream, and `export const config` does
+ * not disable it outside Next.js.
+ */
+export const readRawBody = async (req) => {
+  if (isWebRequest(req)) {
+    return Buffer.from(await req.text(), 'utf8');
   }
 
   const chunks = [];
@@ -14,4 +17,12 @@ export const readRawBody = async (req) => {
     chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
   }
   return Buffer.concat(chunks);
+};
+
+export const readRequestHeader = (req, name) => {
+  const headers = req?.headers;
+  if (headers && typeof headers.get === 'function') return headers.get(name);
+  if (!headers) return undefined;
+  const value = headers[name] ?? headers[name.toLowerCase()];
+  return Array.isArray(value) ? value[0] : value;
 };

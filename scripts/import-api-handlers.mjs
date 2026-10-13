@@ -35,8 +35,12 @@ if (handlers.length === 0) {
 for (const file of handlers) {
   const rel = path.relative(root, file);
   const mod = await import(pathToFileURL(file).href);
-  if (typeof mod.default !== 'function') {
-    throw new Error(`${rel} did not export a default function`);
+  const hasHandler = typeof mod.default === 'function'
+    || typeof mod.default?.fetch === 'function'
+    || typeof mod.POST === 'function'
+    || typeof mod.GET === 'function';
+  if (!hasHandler) {
+    throw new Error(`${rel} did not export a Vercel handler`);
   }
   console.log(`imported ${rel}`);
 }
