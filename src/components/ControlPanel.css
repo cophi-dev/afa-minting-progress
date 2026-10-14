@@ -305,3 +305,5 @@
     transition: none;
   }
 }
+
+.card-open .site-tools { display: none; }

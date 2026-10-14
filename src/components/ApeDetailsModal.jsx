@@ -81,6 +81,25 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
     };
   }, [open, apeData, stopPending]);
 
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  // Android/browser back closes the card instead of leaving the page.
+  useEffect(() => {
+    if (!open) return undefined;
+    let closedByPop = false;
+    window.history.pushState({ afaCard: true }, '');
+    const onPop = () => {
+      closedByPop = true;
+      onCloseRef.current?.();
+    };
+    window.addEventListener('popstate', onPop);
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      if (!closedByPop && window.history.state?.afaCard) window.history.back();
+    };
+  }, [open]);
+
   useEffect(() => {
     // One yellow button per screen: the header CTA hides while a card is open.
     const root = document.documentElement;
@@ -129,7 +148,7 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
   const holder = apeData.ens || shortAddress(apeData.owner);
 
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="ape-card-title">
+    <Modal open={open} onClose={onClose} aria-labelledby="ape-card-title" sx={{ zIndex: 1700 }}>
       <div className="ape-card-backdrop" onClick={onClose} role="presentation">
         <article
           className={`ape-card ${isMinted ? 'is-minted' : 'is-unminted'}`}

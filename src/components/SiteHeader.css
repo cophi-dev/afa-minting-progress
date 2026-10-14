@@ -237,6 +237,8 @@
 
 /* Only one yellow button per screen while a card is open. */
 .card-open .header-cta { visibility: hidden; }
+/* Header and toolbar never sit over an open card or its close button. */
+.card-open .site-header { visibility: hidden; }
 
 /* Sticky compact state while the grid is scrolled: logo, count + bar, CTA. Max 64px. */
 .header-compact .site-header { padding-top: 8px; padding-bottom: 8px; }
