@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback, lazy, Suspense } from 'react';
+import BlurLookup from './BlurLookup';
 import SiteHeader from './SiteHeader';
 import ControlPanel from './ControlPanel';
 import TraitFilter from './TraitFilter';
@@ -31,6 +32,8 @@ const cachedMint = loadMintCache();
 
 function NFTGrid() {
   const [mintedStatus, setMintedStatus] = useState(() => cachedMint?.statuses ?? new Map());
+  const [blurOpen, setBlurOpen] = useState(false);
+  const mintedIdSet = useMemo(() => new Set(mintedStatus.keys()), [mintedStatus]);
   const [mintedCountFromChain, setMintedCountFromChain] = useState(() => (
     Number.isFinite(cachedMint?.mintedCount) ? cachedMint.mintedCount : null
   ));
@@ -372,7 +375,10 @@ function NFTGrid() {
         updatedAt={updatedAt}
         fetchError={fetchError}
         onRetry={handleRetryMintStatus}
+        onOpenBlur={() => setBlurOpen(true)}
+        onMintClick={openApeModal}
       />
+      <BlurLookup open={blurOpen} onClose={() => setBlurOpen(false)} mintedIds={mintedIdSet} />
       {isMobile && (
         <div className="mobile-trait-bar" ref={traitBarRef}>
           <TraitFilter

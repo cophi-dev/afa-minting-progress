@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { setAfaIpfsImageSrc, tryNextAfaIpfsGateway } from '../utils/imageUrls';
 import './SiteHeader.css';
+import LatestMintsStrip from './LatestMintsStrip';
 
 export const EDITOR_HOME = 'https://afa-editor.app';
 
@@ -87,6 +88,8 @@ const SiteHeader = ({
   fetchError = null,
   onRetry,
   headerTools = null,
+  onOpenBlur,
+  onMintClick,
 }) => {
   const headerRef = useRef(null);
   const countReady = mintedCount > 0 || Boolean(updatedAt) || (!mintDataLoading && !fetchError);
@@ -123,6 +126,9 @@ const SiteHeader = ({
         </a>
         <div className="site-header-actions">
           {headerTools}
+          <button type="button" className="editor-link blur-open" onClick={onOpenBlur}>
+            See your AFA
+          </button>
           <a
             className="editor-link"
             href={EDITOR_HOME}
@@ -185,6 +191,7 @@ const SiteHeader = ({
             </button>
           </div>
         )}
+        <LatestMintsStrip onMintClick={onMintClick} />
       </div>
     </header>
   );
