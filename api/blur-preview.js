@@ -8,21 +8,35 @@ const OUT = 128;
  * The sharp source never leaves the server: we downsample to 12px,
  * upscale to 128px, Gaussian-blur and add noise before encoding.
  */
-export const blurAfa = async (input, seed = 1) => {
+export const BLUR_LEVELS = {
+  heavy: { base: 12, sigma: 7, noise: 36 },
+  strong: { base: 24, sigma: 4, noise: 28 },
+  medium: { base: 32, sigma: 2.6, noise: 22 },
+  light: { base: 48, sigma: 2, noise: 18 },
+  faint: { base: 64, sigma: 1.4, noise: 14 },
+};
+export const DEFAULT_BLUR = 'medium';
+
+/**
+ * Low-res, blurred AFA preview. Silhouette, colours and gaze stay readable;
+ * details do not. Output is always 128px.
+ */
+export const blurAfa = async (input, seed = 1, level = DEFAULT_BLUR) => {
+  const { base, sigma, noise: amp } = BLUR_LEVELS[level] ?? BLUR_LEVELS[DEFAULT_BLUR];
   const sharp = (await import('sharp')).default;
-  const tiny = await sharp(input).resize(12, 12, { fit: 'cover' }).removeAlpha().raw().toBuffer();
+  const tiny = await sharp(input).resize(base, base, { fit: 'cover' }).removeAlpha().raw().toBuffer();
   const noise = Buffer.alloc(OUT * OUT * 3);
   let s = seed >>> 0 || 1;
   for (let i = 0; i < noise.length; i += 1) {
     s = (s * 1664525 + 1013904223) >>> 0;
-    noise[i] = 110 + (s >>> 24) % 36;
+    noise[i] = 128 - (amp >> 1) + ((s >>> 24) % amp);
   }
   const noiseLayer = await sharp(noise, { raw: { width: OUT, height: OUT, channels: 3 } }).png().toBuffer();
-  return sharp(tiny, { raw: { width: 12, height: 12, channels: 3 } })
+  return sharp(tiny, { raw: { width: base, height: base, channels: 3 } })
     .resize(OUT, OUT, { kernel: 'cubic' })
-    .blur(7)
+    .blur(sigma * (OUT / base) / 2)
     .composite([{ input: noiseLayer, blend: 'soft-light' }])
-    .webp({ quality: 55 })
+    .webp({ quality: 60 })
     .toBuffer();
 };
 

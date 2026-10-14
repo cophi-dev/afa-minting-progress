@@ -10,10 +10,11 @@
     "@mui/material": "^5.16.13",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.1",
+    "opentype.js": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "zod": "^3.25.76",
-    "sharp": "^0.34.4"
+    "sharp": "^0.34.4",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.17.0",

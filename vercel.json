@@ -14,6 +14,10 @@
     },
     "api/blur-preview.js": {
       "maxDuration": 15
+    },
+    "api/og-ape.js": {
+      "maxDuration": 20,
+      "includeFiles": "{api/lib/fonts/**,public/logo-mark.png}"
     }
   },
   "redirects": [
@@ -116,6 +120,10 @@
     {
       "source": "/go/:slug",
       "destination": "/api/go/:slug"
+    },
+    {
+      "source": "/ape/:id",
+      "destination": "/api/ape-page?id=:id"
     }
   ]
 }

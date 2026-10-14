@@ -131,3 +131,24 @@
 }
 
 .blur-status-minted { color: #6ee7a0; }
+
+.blur-share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-left: 8px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.blur-permalink {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: rgba(240, 242, 245, 0.55);
+}
