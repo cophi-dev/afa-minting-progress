@@ -64,9 +64,16 @@
 }
 
 .latest-strip-gift {
-  padding: 0 5px;
-  border-radius: 4px;
-  background: rgba(110, 231, 160, 0.16);
-  color: #6ee7a0;
-  font-weight: 600;
+  align-self: center;
+  color: rgba(240, 242, 245, 0.45);
+}
+
+@media (max-width: 768px) {
+  .latest-strip { position: relative; }
+
+  .latest-strip-list {
+    -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent);
+    mask-image: linear-gradient(90deg, #000 85%, transparent);
+    padding-right: 32px;
+  }
 }

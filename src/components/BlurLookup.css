@@ -37,10 +37,10 @@
 
 .blur-title {
   margin: 0 0 6px;
-  font-family: 'Archivo Black', Inter, sans-serif;
-  font-weight: 400;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
   font-size: 22px;
-  text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 
 .blur-lede { margin: 0 0 16px; font-size: 14px; color: rgba(240, 242, 245, 0.7); }
@@ -65,9 +65,9 @@
   padding: 0 18px;
   border: 0;
   border-radius: 10px;
-  background: #6ee7a0;
-  color: #0d0f12;
-  font-weight: 700;
+  background: #f5c542;
+  color: #0b0b0c;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -123,9 +123,11 @@
   justify-content: center;
   min-height: 44px;
   padding: 0 20px;
-  border-radius: 10px;
-  background: #6ee7a0;
-  color: #0d0f12;
-  font-weight: 700;
+  border-radius: 8px;
+  background: #f5c542;
+  color: #0b0b0c;
+  font-weight: 600;
   text-decoration: none;
 }
+
+.blur-status-minted { color: #6ee7a0; }

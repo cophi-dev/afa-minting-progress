@@ -37,7 +37,11 @@ const LatestMintsStrip = ({ onMintClick, limit = 8 }) => {
                 <span className="latest-strip-id">#{mint.token_id}</span>
                 <span className="latest-strip-meta">
                   {timeAgo(mint.timestamp)}
-                  {mint.is_gift && <span className="latest-strip-gift">Gift</span>}
+                  {mint.is_gift && (
+                    <svg className="latest-strip-gift" viewBox="0 0 16 16" width="11" height="11" role="img" aria-label="Gift">
+                      <path fill="currentColor" d="M2 7h12v2H2zM3 9h4v5H3zm6 0h4v5H9zM7 7h2v7H7zM8 6C6.5 3 4 3.5 4.5 5S8 6 8 6zm0 0c1.5-3 4-2.5 3.5-1S8 6 8 6z" />
+                    </svg>
+                  )}
                 </span>
               </span>
             </button>

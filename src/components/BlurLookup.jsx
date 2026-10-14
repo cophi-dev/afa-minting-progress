@@ -76,13 +76,13 @@ const BlurLookup = ({ open, onClose, mintedIds }) => {
             {result.minted ? (
               <>
                 <img className="blur-image" src={`/hires/${result.id}.webp`} onError={(e) => { if (!e.currentTarget.dataset.fb) { e.currentTarget.dataset.fb = '1'; e.currentTarget.src = `/images/${result.id}.webp`; } }} alt={`AFA #${result.id}`} width="256" height="256" />
-                <p className="blur-caption">AFA #{result.id} is minted.</p>
+                <p className="blur-caption">AFA #{result.id} is <span className="blur-status-minted">minted</span>.</p>
                 <a className="blur-cta" href={EDITOR_URL(result.id)} target="_blank" rel="noopener noreferrer">Open in the editor</a>
               </>
             ) : (
               <>
                 <img className="blur-image is-blurred" src={`/api/blur-preview?id=${result.id}`} alt={`Blurred preview of AFA #${result.id}`} width="256" height="256" />
-                <p className="blur-caption">AFA #{result.id}: mint to reveal.</p>
+                <p className="blur-caption">AFA #{result.id}: Mint to reveal.</p>
                 <a className="blur-cta" href={MINT_URL} target="_blank" rel="noopener noreferrer">Mint on apefacingapes.com</a>
               </>
             )}
