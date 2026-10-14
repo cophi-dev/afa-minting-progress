@@ -198,9 +198,8 @@ function NFTGrid() {
       setCellTip((current) => (current ? null : current));
       const top = el.scrollTop;
       const delta = top - lastTop;
-      root.classList.toggle('header-compact', top > 40);
-      if (top < 40 || delta < -6) root.classList.remove('tools-hidden');
-      else if (delta > 6) root.classList.add('tools-hidden');
+      // Desktop only: the mobile header stays exactly as it is (sticky, unchanged).
+      root.classList.toggle('header-compact', top > 40 && window.innerWidth > 768);
       if (Math.abs(delta) > 6 || top < 40) lastTop = top;
       if (rafId) return;
       rafId = requestAnimationFrame(() => {
@@ -214,7 +213,6 @@ function NFTGrid() {
     return () => {
       el.removeEventListener('scroll', onScroll);
       if (rafId) cancelAnimationFrame(rafId);
-      root.classList.remove('tools-hidden');
       root.classList.remove('header-compact');
     };
   }, [syncVisibleRange]);
