@@ -198,6 +198,7 @@ function NFTGrid() {
       setCellTip((current) => (current ? null : current));
       const top = el.scrollTop;
       const delta = top - lastTop;
+      root.classList.toggle('header-compact', top > 40);
       if (top < 40 || delta < -6) root.classList.remove('tools-hidden');
       else if (delta > 6) root.classList.add('tools-hidden');
       if (Math.abs(delta) > 6 || top < 40) lastTop = top;
@@ -214,6 +215,7 @@ function NFTGrid() {
       el.removeEventListener('scroll', onScroll);
       if (rafId) cancelAnimationFrame(rafId);
       root.classList.remove('tools-hidden');
+      root.classList.remove('header-compact');
     };
   }, [syncVisibleRange]);
 
@@ -379,21 +381,6 @@ function NFTGrid() {
         onMintClick={openApeModal}
       />
       <BlurLookup open={blurOpen} onClose={() => setBlurOpen(false)} mintedIds={mintedIdSet} />
-      {isMobile && (
-        <div className="mobile-trait-bar" ref={traitBarRef}>
-          <TraitFilter
-            catalog={traitCatalog}
-            filters={traitFilters}
-            onChange={handleTraitFiltersChange}
-            matchCount={filteredTokenIds?.length ?? null}
-            mintedCount={filteredMintedCount}
-            mintDataLoading={mintDataLoading}
-            loading={traitCatalogLoading}
-            isMobile
-            onExpand={handleTraitFilterOpen}
-          />
-        </div>
-      )}
       <div className="nft-grid-wrapper" ref={gridRef} aria-busy={showSkeleton}>
         <div
           className={`nft-grid${filteredTokenIds ? ' filtered' : ''}${shuffleEnabled ? ' shuffled' : ''}`}
@@ -438,6 +425,7 @@ function NFTGrid() {
           open={modalOpen}
           onClose={handleModalClose}
           apeData={selectedApe}
+          mintedCount={mintedCount}
         />
       </Suspense>
 
@@ -448,7 +436,7 @@ function NFTGrid() {
         zoom={zoom}
         showBayc={showBayc}
         isMobile={isMobile}
-        showTraitFilter={!isMobile}
+        showTraitFilter
         hidden={modalOpen}
         traitFilters={traitFilters}
         onTraitFiltersChange={handleTraitFiltersChange}

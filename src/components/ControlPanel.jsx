@@ -33,18 +33,18 @@ const mobileSectionLabelSx = {
 };
 
 const sliderSx = {
-  color: '#6ee7a0',
+  color: '#f5c542',
   height: 4,
   mt: 0.25,
-  '& .MuiSlider-track': { height: 4, backgroundColor: '#6ee7a0' },
+  '& .MuiSlider-track': { height: 4, backgroundColor: '#f5c542' },
   '& .MuiSlider-rail': { height: 4, backgroundColor: 'rgba(255, 255, 255, 0.15)' },
   '& .MuiSlider-thumb': {
     width: 14,
     height: 14,
-    backgroundColor: '#6ee7a0',
+    backgroundColor: '#f5c542',
     border: '2px solid #fff',
-    '&:hover, &.Mui-focusVisible': { boxShadow: '0 0 0 5px rgba(110, 231, 160, 0.18)' },
-    '&.Mui-active': { boxShadow: '0 0 0 7px rgba(110, 231, 160, 0.24)' },
+    '&:hover, &.Mui-focusVisible': { boxShadow: '0 0 0 5px rgba(245, 197, 66, 0.18)' },
+    '&.Mui-active': { boxShadow: '0 0 0 7px rgba(245, 197, 66, 0.24)' },
   },
   '& .MuiSlider-mark': {
     backgroundColor: 'rgba(255, 255, 255, 0.35)',
@@ -68,8 +68,8 @@ const mobileSliderSx = {
   '& .MuiSlider-thumb': {
     width: 18,
     height: 18,
-    '&:hover, &.Mui-focusVisible': { boxShadow: '0 0 0 6px rgba(110, 231, 160, 0.18)' },
-    '&.Mui-active': { boxShadow: '0 0 0 9px rgba(110, 231, 160, 0.24)' },
+    '&:hover, &.Mui-focusVisible': { boxShadow: '0 0 0 6px rgba(245, 197, 66, 0.18)' },
+    '&.Mui-active': { boxShadow: '0 0 0 9px rgba(245, 197, 66, 0.24)' },
   },
   '& .MuiSlider-mark': { width: 4, height: 4 },
   '& .MuiSlider-markLabel': {
@@ -81,8 +81,8 @@ const mobileSliderSx = {
 };
 
 const switchSx = {
-  '& .MuiSwitch-switchBase.Mui-checked': { color: '#6ee7a0' },
-  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#6ee7a0' },
+  '& .MuiSwitch-switchBase.Mui-checked': { color: '#f5c542' },
+  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { backgroundColor: '#f5c542' },
   '& .MuiSwitch-track': { backgroundColor: 'rgba(255, 255, 255, 0.2)' },
   '& .MuiSwitch-thumb': { backgroundColor: '#fff' },
 };
@@ -191,7 +191,7 @@ const ControlPanel = ({
       borderColor: 'rgba(255, 255, 255, 0.22)',
     },
     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#6ee7a0',
+      borderColor: '#f5c542',
       borderWidth: 1,
     },
     '& .MuiInputBase-input': {

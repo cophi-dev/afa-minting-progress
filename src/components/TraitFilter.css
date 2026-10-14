@@ -9,13 +9,13 @@
 }
 
 .trait-filter-card.is-active {
-  border-color: rgba(110, 231, 160, 0.28);
-  background: rgba(110, 231, 160, 0.06);
-  box-shadow: 0 0 0 1px rgba(110, 231, 160, 0.08);
+  border-color: rgba(245, 197, 66, 0.28);
+  background: rgba(245, 197, 66, 0.06);
+  box-shadow: 0 0 0 1px rgba(245, 197, 66, 0.08);
 }
 
 .trait-filter-card.is-expanded {
-  border-color: rgba(110, 231, 160, 0.22);
+  border-color: rgba(245, 197, 66, 0.22);
   background: rgba(255, 255, 255, 0.04);
 }
 
@@ -40,7 +40,7 @@
 }
 
 .trait-filter-header:focus-visible {
-  outline: 2px solid #6ee7a0;
+  outline: 2px solid #f5c542;
   outline-offset: 2px;
 }
 
@@ -52,14 +52,14 @@
   height: 32px;
   border-radius: 8px;
   flex-shrink: 0;
-  background: rgba(110, 231, 160, 0.12);
-  border: 1px solid rgba(110, 231, 160, 0.22);
-  color: #6ee7a0;
+  background: rgba(245, 197, 66, 0.12);
+  border: 1px solid rgba(245, 197, 66, 0.22);
+  color: #f5c542;
 }
 
 .trait-filter-card.is-active .trait-filter-icon-wrap {
-  background: rgba(110, 231, 160, 0.18);
-  border-color: rgba(110, 231, 160, 0.35);
+  background: rgba(245, 197, 66, 0.18);
+  border-color: rgba(245, 197, 66, 0.35);
 }
 
 .trait-filter-types {
@@ -104,8 +104,8 @@
 }
 
 .trait-filter-type-btn.is-active {
-  background: rgba(110, 231, 160, 0.16);
-  border-color: rgba(110, 231, 160, 0.4);
+  background: rgba(245, 197, 66, 0.16);
+  border-color: rgba(245, 197, 66, 0.4);
   color: #d4fae5;
 }
 
@@ -120,7 +120,7 @@
   border-radius: 999px;
   font-size: 0.5625rem;
   font-weight: 700;
-  background: rgba(110, 231, 160, 0.25);
+  background: rgba(245, 197, 66, 0.25);
   color: #d4fae5;
 }
 
@@ -177,8 +177,8 @@
 }
 
 .trait-filter-value-btn.is-selected {
-  background: rgba(110, 231, 160, 0.14);
-  border-color: rgba(110, 231, 160, 0.38);
+  background: rgba(245, 197, 66, 0.14);
+  border-color: rgba(245, 197, 66, 0.38);
   color: #d4fae5;
 }
 
@@ -193,8 +193,8 @@
   min-height: 28px;
   padding: 2px 4px 2px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(110, 231, 160, 0.35);
-  background: rgba(110, 231, 160, 0.12);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  background: rgba(245, 197, 66, 0.12);
   color: #d4fae5;
   font-size: 0.6875rem;
   font-weight: 500;
