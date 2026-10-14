@@ -1,6 +1,6 @@
 import { apeCopy, isMinted, parseApeId } from './lib/apeState.js';
 
-const SITE = 'https://afa-progress.com';
+const SITE = 'https://afa-mint-progress.vercel.app';
 const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export const renderApePage = ({ id, minted, version = '3' }) => {

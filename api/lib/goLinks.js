@@ -2,7 +2,7 @@
 export const GO_TARGETS = {
   mint: 'https://www.apefacingapes.com/',
   editor: 'https://afa-editor.app/',
-  progress: 'https://afa-progress.com/',
+  progress: 'https://afa-mint-progress.vercel.app/',
 };
 
 export const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{0,47}$/;
@@ -19,7 +19,7 @@ export const parseTarget = (value) => {
   return Object.prototype.hasOwnProperty.call(GO_TARGETS, raw) ? raw : null;
 };
 
-/** Slugs used by links on afa-progress.com itself (not shared on X). */
+/** Slugs used by links on the progress site itself (not shared on X). */
 export const INTERNAL_SLUGS = new Set(['ape-page', 'see-your-afa']);
 
 export const buildTargetUrl = (target, slug) => {
