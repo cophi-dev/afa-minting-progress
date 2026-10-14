@@ -40,7 +40,7 @@ html, body, #root {
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
-  padding: 12px 12px calc(var(--site-tools-offset, 72px) + 8px);
+  padding: 12px 12px calc(var(--site-tools-offset, 72px) + 16px + env(safe-area-inset-bottom, 0px));
 }
 
 /* Virtual grid shell — holds total scroll height */
@@ -273,7 +273,7 @@ html, body, #root {
   }
 
   .nft-grid-wrapper {
-    padding: 2px 2px calc(var(--site-tools-offset, 72px) + 6px);
+    padding: 2px 2px calc(var(--site-tools-offset, 72px) + 16px + env(safe-area-inset-bottom, 0px));
     top: calc(var(--site-header-offset, 128px) + var(--mobile-trait-offset, 0px));
     bottom: 0;
     touch-action: pan-y;
@@ -287,7 +287,7 @@ html, body, #root {
 
 @media (max-width: 480px) {
   .nft-grid-wrapper {
-    padding: 2px;
+    padding: 2px 2px calc(var(--site-tools-offset, 72px) + 16px + env(safe-area-inset-bottom, 0px));
   }
 
   .loading-logo {
