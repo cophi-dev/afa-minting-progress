@@ -92,3 +92,10 @@
   .ape-card-title { font-size: 40px; }
   .ape-card-media { aspect-ratio: auto; height: min(100vw - 20px, 52dvh); }
 }
+
+.ape-card .cta-dest, .cta-dest {
+  display: block; margin-top: 6px; text-align: center;
+  font-family: 'Barlow', ui-sans-serif, system-ui, sans-serif; font-size: 12px;
+  color: rgba(255,255,255,0.6); text-decoration: none;
+}
+.cta-dest:hover { color: #fff; text-decoration: underline; }

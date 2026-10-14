@@ -11,7 +11,7 @@ export const renderApePage = ({ id, minted, version = '3' }) => {
   const fallback = `/images/${id}.webp`;
   const cta = minted
     ? `<a class="cta" href="https://afa-editor.app/?tokenId=${id}&utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page">Open in the editor</a>`
-    : `<a class="cta" href="/go/ape-page?to=mint">Mint on apefacingapes.com</a>`;
+    : `<a class="cta" href="https://www.apefacingapes.com/claim?utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page" rel="noopener">Mint to reveal</a><a class="hint" href="https://www.apefacingapes.com/" rel="noopener">on apefacingapes.com ↗</a>`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,6 +47,8 @@ export const renderApePage = ({ id, minted, version = '3' }) => {
   .ape{width:100%;max-width:320px;aspect-ratio:1;border-radius:12px;background:#151517;display:block;margin:0 auto 24px}
   .status{color:#6ee7a0}
   .cta{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:8px;background:#f5c542;color:#0b0b0c;font-weight:600;text-decoration:none}
+  .hint{display:block;margin-top:8px;color:rgba(255,255,255,.6);font-size:13px;text-decoration:none}
+  footer{max-width:460px;margin:0 auto;padding:24px 20px 40px;text-align:center;color:rgba(255,255,255,.55);font-size:13px}footer a{color:rgba(255,255,255,.75)}
   .more{display:block;margin-top:20px;color:rgba(255,255,255,.6)}
 </style>
 </head>
@@ -59,6 +61,7 @@ export const renderApePage = ({ id, minted, version = '3' }) => {
 ${cta}
 <a class="more" href="/">See all 10,000 apes</a>
 </main>
+<footer>Built by the Ape Facing Apes team · not affiliated with Yuga Labs<br />Ape Facing Apes: <a href="https://www.apefacingapes.com/" rel="noopener">apefacingapes.com</a> · <a href="https://x.com/ApeFacingApes" rel="noopener">@ApeFacingApes</a></footer>
 </body>
 </html>`;
 };

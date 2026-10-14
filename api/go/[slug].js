@@ -1,4 +1,4 @@
-import { buildTargetUrl, clickPathname, parseSlug, parseTarget } from '../lib/goLinks.js';
+import { buildTargetUrl, clickPathname, parseSlug, targetForSlug } from '../lib/goLinks.js';
 
 const BOT_UA = /bot|crawler|spider|preview|facebookexternalhit|slurp|discord|telegram|whatsapp/i;
 
@@ -28,7 +28,8 @@ const refererHost = (value) => {
 
 export default async function handler(req, res) {
   const slug = parseSlug(req.query?.slug);
-  const target = parseTarget(req.query?.to ?? 'mint');
+  // Fixed target per slug; ?to= and any other params are ignored (no open redirect).
+  const target = slug ? targetForSlug(slug) : null;
   res.setHeader('Cache-Control', 'no-store');
   if (!slug || !target) {
     return res.status(400).json({ error: 'invalid_link' });
