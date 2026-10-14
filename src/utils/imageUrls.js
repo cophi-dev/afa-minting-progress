@@ -2,7 +2,8 @@ import { invalidateImageCached, preloadImageCached } from './imageCache';
 
 const IPFS_GATEWAYS = [
   import.meta.env.VITE_IPFS_GATEWAY,
-  'https://ipfs.io/ipfs',
+  // ipfs.io / dweb.link were sunset on 2026-09-21 (HTTP 429, blocked in browsers).
+  'https://ipfs.filebase.io/ipfs',
   'https://w3s.link/ipfs',
 ].filter(Boolean);
 
@@ -34,6 +35,9 @@ export const getAfaThumbnailUrl = (tokenId) => `/images/${tokenId}.webp`;
 export const getAfaThumbnailFallbackUrl = (tokenId) => `/images/${tokenId}.png`;
 
 export const getAfaLocalHiresUrl = (tokenId) => `/hires/${tokenId}.webp`;
+
+/** Server-rendered hi-res for minted AFAs not yet in public/hires (see api/afa-image.js). */
+export const getAfaServerHiresUrl = (tokenId) => `/api/afa-image?tokenId=${tokenId}`;
 
 export const isLocalHiresSrc = (src) =>
   typeof src === 'string' && src.includes('/hires/');

@@ -21,7 +21,8 @@ const CID_PATH = path.join(ROOT, 'src', 'data', 'image_cids.json');
 const ipfsGateways = () => [
   process.env.VITE_IPFS_GATEWAY,
   process.env.REACT_APP_IPFS_GATEWAY,
-  'https://ipfs.io/ipfs',
+  // ipfs.io / dweb.link were sunset on 2026-09-21 (HTTP 429).
+  'https://ipfs.filebase.io/ipfs',
   'https://w3s.link/ipfs',
 ].filter(Boolean);
 
