@@ -55,7 +55,7 @@ export default async function handler(req, res) {
       return res.status(409).json({ minted: true, tokenId: id });
     }
 
-    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    const host = 'afa-progress.com'; // static assets; also works behind preview protection
     const source = await fetch(`https://${host}/images/${id}.webp`);
     if (!source.ok) throw new Error(`source ${source.status}`);
     const blurred = await blurAfa(Buffer.from(await source.arrayBuffer()), id + 7);

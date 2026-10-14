@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   }
   try {
     const minted = await isMinted(id);
-    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    const host = 'afa-progress.com'; // static assets; also works behind preview protection
     let ape;
     if (minted) {
       let source = await fetch(`https://${host}/hires/${id}.webp`);
