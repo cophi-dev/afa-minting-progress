@@ -64,7 +64,6 @@
 }
 .ape-card-cta:hover { background: #ffd45e; transform: translateY(-1px); }
 .ape-card-cta:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-.ape-card-count { margin: -6px 0 0; text-align: center; font-size: 13px; color: rgba(244, 244, 245, 0.6); }
 .ape-card-traits { border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 4px; }
 .ape-card-traits-toggle {
   display: flex; align-items: center; justify-content: space-between; width: 100%;
@@ -76,6 +75,10 @@
 .ape-card-trait { padding: 6px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); }
 .ape-card-trait dt { font-family: var(--font-label); font-weight: 600; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(244, 244, 245, 0.5); }
 .ape-card-trait dd { margin: 0; font-size: 14px; color: #f4f4f5; }
+
+@media (min-width: 900px) {
+  .ape-card-body { justify-content: center; }
+}
 
 @media (max-width: 768px) {
   .ape-card-backdrop { padding: 10px; align-items: flex-end; }

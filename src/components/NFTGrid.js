@@ -425,7 +425,6 @@ function NFTGrid() {
           open={modalOpen}
           onClose={handleModalClose}
           apeData={selectedApe}
-          mintedCount={mintedCount}
         />
       </Suspense>
 

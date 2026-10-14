@@ -22,7 +22,7 @@ const formatMintDate = (iso) => new Date(iso).toLocaleDateString('en-US', {
   year: 'numeric',
 });
 
-const ApeDetailsModal = ({ open, onClose, apeData, mintedCount = null }) => {
+const ApeDetailsModal = ({ open, onClose, apeData }) => {
   const [baycMetadata, setBaycMetadata] = useState(null);
   const [baseUrl, setBaseUrl] = useState(null);
   const [hiresUrl, setHiresUrl] = useState(null);
@@ -56,7 +56,7 @@ const ApeDetailsModal = ({ open, onClose, apeData, mintedCount = null }) => {
     setHiresUrl(null);
     setHiresReady(false);
     setHiresPending(isMinted);
-    setTraitsOpen(false);
+    setTraitsOpen(isMinted && window.matchMedia('(min-width: 900px)').matches);
     setBaycMetadata(getBaycMetadata(tokenId) ?? null);
 
     getBaycMetadataAsync(tokenId)
@@ -80,6 +80,13 @@ const ApeDetailsModal = ({ open, onClose, apeData, mintedCount = null }) => {
       }
     };
   }, [open, apeData, stopPending]);
+
+  useEffect(() => {
+    // One yellow button per screen: the header CTA hides while a card is open.
+    const root = document.documentElement;
+    root.classList.toggle('card-open', Boolean(open));
+    return () => root.classList.remove('card-open');
+  }, [open]);
 
   const isStale = (img) => {
     const tokenId = currentTokenRef.current;
@@ -185,7 +192,7 @@ const ApeDetailsModal = ({ open, onClose, apeData, mintedCount = null }) => {
                     img.src = getBaycThumbnailFallbackUrl(tokenId);
                   }}
                 />
-                <figcaption>Original</figcaption>
+                <figcaption>{`Original BAYC #${tokenId}`}</figcaption>
               </figure>
             )}
 
@@ -212,11 +219,6 @@ const ApeDetailsModal = ({ open, onClose, apeData, mintedCount = null }) => {
                 >
                   Mint to reveal
                 </a>
-                {Number.isFinite(mintedCount) && mintedCount > 0 && (
-                  <p className="ape-card-count">
-                    {mintedCount.toLocaleString('en-US')} of 10,000 minted
-                  </p>
-                )}
               </>
             )}
 

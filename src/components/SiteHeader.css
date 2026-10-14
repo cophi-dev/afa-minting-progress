@@ -235,6 +235,9 @@
 
 .mint-error p { margin: 0; color: #fecaca; font-size: 13px; }
 
+/* Only one yellow button per screen while a card is open. */
+.card-open .header-cta { visibility: hidden; }
+
 /* Sticky compact state while the grid is scrolled: logo, count + bar, CTA. Max 64px. */
 .header-compact .site-header { padding-top: 8px; padding-bottom: 8px; }
 .header-compact .site-header-row { min-height: 0; max-height: 47px; }
