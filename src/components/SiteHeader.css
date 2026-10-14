@@ -248,7 +248,7 @@
 .header-compact .site-logo { height: 32px; }
 .header-compact .mint-meter { flex: 1 1 auto; max-width: 420px; }
 .header-compact .site-header .mint-count-number { font-size: 26px; }
-.header-compact .header-cta { min-height: 40px; }
+.header-compact .header-cta { min-height: 40px; margin-left: auto; }
 
 @media (max-width: 768px) {
   .site-header { padding: 10px 12px; }
