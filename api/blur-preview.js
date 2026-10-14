@@ -21,7 +21,7 @@ export const DEFAULT_BLUR = 'medium';
  * Low-res, blurred AFA preview. Silhouette, colours and gaze stay readable;
  * details do not. Output is always 128px.
  */
-export const blurAfa = async (input, seed = 1, level = DEFAULT_BLUR) => {
+export const blurAfa = async (input, seed = 1, level = DEFAULT_BLUR, { size = OUT, format = 'webp' } = {}) => {
   const { base, sigma, noise: amp } = BLUR_LEVELS[level] ?? BLUR_LEVELS[DEFAULT_BLUR];
   const sharp = (await import('sharp')).default;
   const tiny = await sharp(input).resize(base, base, { fit: 'cover' }).removeAlpha().raw().toBuffer();
@@ -32,12 +32,16 @@ export const blurAfa = async (input, seed = 1, level = DEFAULT_BLUR) => {
     noise[i] = 128 - (amp >> 1) + ((s >>> 24) % amp);
   }
   const noiseLayer = await sharp(noise, { raw: { width: OUT, height: OUT, channels: 3 } }).png().toBuffer();
-  return sharp(tiny, { raw: { width: base, height: base, channels: 3 } })
-    .resize(OUT, OUT, { kernel: 'cubic' })
-    .blur(sigma * (OUT / base) / 2)
-    .composite([{ input: noiseLayer, blend: 'soft-light' }])
-    .webp({ quality: 60 })
-    .toBuffer();
+  // Render directly at the target size (sigma scales with it), so a large
+  // card looks exactly like the 128px preview shown at that size, without
+  // re-blurring a compressed 128px webp.
+  const grain = size === OUT ? noiseLayer
+    : await sharp(noiseLayer).resize(size, size, { kernel: 'nearest' }).png().toBuffer();
+  const img = sharp(tiny, { raw: { width: base, height: base, channels: 3 } })
+    .resize(size, size, { kernel: 'cubic' })
+    .blur(sigma * (size / base) / 2)
+    .composite([{ input: grain, blend: 'soft-light' }]);
+  return (format === 'png' ? img.png() : img.webp({ quality: 60 })).toBuffer();
 };
 
 export default async function handler(req, res) {

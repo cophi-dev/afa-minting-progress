@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     } else {
       const source = await fetch(`https://${host}/images/${id}.webp`);
       if (!source.ok) throw new Error(`source ${source.status}`);
-      ape = await blurAfa(Buffer.from(await source.arrayBuffer()), id);
+      ape = await blurAfa(Buffer.from(await source.arrayBuffer()), id, 'medium', { size: 510, format: 'png' });
     }
     const { title, subtitle } = apeCopy(id, minted);
     const png = await renderOgCard({ ape, title, subtitle, footer: 'afa-progress.com' });
