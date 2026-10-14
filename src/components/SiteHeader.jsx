@@ -86,6 +86,7 @@ const SiteHeader = ({
   updatedAt = null,
   fetchError = null,
   onRetry,
+  headerTools = null,
 }) => {
   const headerRef = useRef(null);
   const countReady = mintedCount > 0 || Boolean(updatedAt) || (!mintDataLoading && !fetchError);
@@ -116,8 +117,12 @@ const SiteHeader = ({
   return (
     <header className="site-header" ref={headerRef}>
       <div className="site-header-top">
-        <h1 className="site-title">AFA Mint Progress</h1>
+        <a className="site-brand" href="/" aria-label="AFA Mint Progress home">
+          <img className="site-logo" src="/logo.png" alt="Ape Facing Apes" width="44" height="44" />
+          <h1 className="site-title">Mint Progress</h1>
+        </a>
         <div className="site-header-actions">
+          {headerTools}
           <a
             className="editor-link"
             href={EDITOR_HOME}
@@ -132,7 +137,14 @@ const SiteHeader = ({
 
       <div className="mint-meter">
         <div className="mint-meter-row">
-          <p className="mint-count">{countLabel}</p>
+          <p className="mint-count">
+            {countReady ? (
+              <>
+                <span className="mint-count-number">{mintedCount.toLocaleString()}</span>
+                <span className="mint-count-total"> of 10,000 minted</span>
+              </>
+            ) : countLabel}
+          </p>
           {mintPercent != null && <p className="mint-percent">{mintPercent}%</p>}
         </div>
         <div

@@ -100,16 +100,22 @@ html, body, #root {
 
 .minted {
   opacity: var(--minted-opacity);
+  z-index: 1;
+  box-shadow: inset 0 0 0 1px rgba(110, 231, 160, 0.75), 0 0 6px rgba(110, 231, 160, 0.35);
+}
+
+.minted img {
+  filter: saturate(1.08);
 }
 
 .unminted {
-  opacity: var(--unminted-opacity);
+  opacity: 1;
 }
 
 /* Subtle blur on unminted only — zoom-scaled so tiny cells stay cheap */
 .unminted img {
   --unminted-blur: clamp(0.35px, calc(var(--cell-zoom, 16) * 0.022px), 1.75px);
-  filter: blur(var(--unminted-blur));
+  filter: grayscale(1) brightness(0.32) blur(var(--unminted-blur));
   transform: scale(calc(1 + var(--cell-zoom, 16) * 0.00075));
 }
 
