@@ -18,6 +18,10 @@
     "api/og-ape.js": {
       "maxDuration": 20,
       "includeFiles": "{api/lib/fonts/**,public/logo-mark.png}"
+    },
+    "api/afa-image.js": {
+      "maxDuration": 30,
+      "includeFiles": "src/data/image_cids.json"
     }
   },
   "redirects": [

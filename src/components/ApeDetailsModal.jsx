@@ -19,20 +19,14 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import { getBaycMetadata, getBaycMetadataAsync } from '../data/baycMetadata';
-import { invalidateImageCached } from '../utils/imageCache';
 import {
   getAfaThumbnailFallbackUrl,
   getBaycThumbnailFallbackUrl,
   getAfaLocalHiresUrl,
+  getAfaServerHiresUrl,
   hasLocalHires,
   isLocalHiresSrc,
-  getAfaIpfsCid,
-  getIpfsGatewayUrls,
-  findGatewayIndexForSrc,
-  getNextUntriedGatewayIndex,
-  cacheIpfsHit,
   ipfsToHttpUrl,
-  resolveAfaIpfsUrlWithMeta,
   resolveIpfsUrl,
 } from '../utils/imageUrls';
 
@@ -87,7 +81,7 @@ const pickHiresLoadingMessage = () =>
   HIRES_LOADING_MESSAGES[Math.floor(Math.random() * HIRES_LOADING_MESSAGES.length)];
 
 const MIN_HIRES_DIMENSION = 256;
-const MAX_IPFS_RETRY_ROUNDS = 4;
+const HIRES_BLUR_TIMEOUT_MS = 6000;
 
 const isValidHiresImage = (img) =>
   img.naturalWidth >= MIN_HIRES_DIMENSION && img.naturalHeight >= MIN_HIRES_DIMENSION;
@@ -204,7 +198,6 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
   const [afaImageUrl, setAfaImageUrl] = useState(null);
   const [afaHiresUrl, setAfaHiresUrl] = useState(null);
   const [afaHiresReady, setAfaHiresReady] = useState(false);
-  const [afaGatewayIndex, setAfaGatewayIndex] = useState(null);
   const [baycImageUrl, setBaycImageUrl] = useState(null);
   const [imageReady, setImageReady] = useState(false);
   const [afaHighResLoading, setAfaHighResLoading] = useState(false);
@@ -215,9 +208,8 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
   const touchStartY = useRef(null);
   const swipeLocked = useRef(null);
   const dragOffsetRef = useRef(0);
-  const afaTriedGatewaysRef = useRef(new Set());
-  const afaRetryTimerRef = useRef(null);
-  const afaRetryRoundRef = useRef(0);
+  const afaHiresTimerRef = useRef(null);
+  const currentTokenRef = useRef(null);
   const maxSteps = 2;
 
   useEffect(() => {
@@ -231,65 +223,17 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
     setHiresLoadingMessage(null);
   }, []);
 
-  const beginAfaHiresAttempt = useCallback(async (tokenId) => {
-    const cid = await getAfaIpfsCid(tokenId, true);
-    if (!cid) return false;
-
-    afaTriedGatewaysRef.current = new Set();
-    const afaHighRes = await resolveAfaIpfsUrlWithMeta(tokenId, true);
-    if (afaHighRes) {
-      afaTriedGatewaysRef.current.add(afaHighRes.gatewayIndex);
-      setAfaGatewayIndex(afaHighRes.gatewayIndex);
-      setAfaHiresUrl(afaHighRes.url);
-      setAfaHiresReady(false);
-      return true;
-    }
-
-    const urls = getIpfsGatewayUrls(cid);
-    const nextIndex = getNextUntriedGatewayIndex(afaTriedGatewaysRef.current, urls.length);
-    if (nextIndex >= 0) {
-      afaTriedGatewaysRef.current.add(nextIndex);
-      setAfaGatewayIndex(nextIndex);
-      setAfaHiresUrl(urls[nextIndex]);
-      setAfaHiresReady(false);
-      return true;
-    }
-
-    return false;
-  }, []);
-
-  const scheduleAfaHiresRetry = useCallback((tokenId) => {
-    if (afaRetryTimerRef.current) clearTimeout(afaRetryTimerRef.current);
-
-    if (afaRetryRoundRef.current >= MAX_IPFS_RETRY_ROUNDS) {
-      setAfaHiresUrl(null);
-      setAfaHiresReady(false);
-      clearAfaHighResLoading();
-      return;
-    }
-
-    const delay = 2500 + afaRetryRoundRef.current * 1500;
-    afaRetryTimerRef.current = window.setTimeout(async () => {
-      afaRetryRoundRef.current += 1;
-      setAfaHighResLoading(true);
-      setHiresLoadingMessage(pickHiresLoadingMessage());
-
-      const started = await beginAfaHiresAttempt(tokenId);
-      if (!started) scheduleAfaHiresRetry(tokenId);
-    }, delay);
-  }, [beginAfaHiresAttempt, clearAfaHighResLoading]);
-
   useEffect(() => {
+    if (afaHiresTimerRef.current) {
+      clearTimeout(afaHiresTimerRef.current);
+      afaHiresTimerRef.current = null;
+    }
     if (!open || !apeData) {
-      if (afaRetryTimerRef.current) {
-        clearTimeout(afaRetryTimerRef.current);
-        afaRetryTimerRef.current = null;
-      }
+      currentTokenRef.current = null;
       setBaycMetadata(null);
       setAfaImageUrl(null);
       setAfaHiresUrl(null);
       setAfaHiresReady(false);
-      setAfaGatewayIndex(null);
       setBaycImageUrl(null);
       setImageReady(false);
       setMetadataLoading(false);
@@ -300,17 +244,11 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
 
     let cancelled = false;
     const { tokenId, image, baycImage, isMinted } = apeData;
+    currentTokenRef.current = tokenId;
 
-    afaTriedGatewaysRef.current = new Set();
-    afaRetryRoundRef.current = 0;
-    if (afaRetryTimerRef.current) {
-      clearTimeout(afaRetryTimerRef.current);
-      afaRetryTimerRef.current = null;
-    }
     setAfaImageUrl(image);
     setAfaHiresUrl(null);
     setAfaHiresReady(false);
-    setAfaGatewayIndex(null);
     setBaycImageUrl(baycImage);
     setImageReady(true);
     setBaycMetadata(null);
@@ -350,26 +288,12 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
     };
 
     const loadAfaHighRes = async () => {
-      try {
-        const cid = await getAfaIpfsCid(tokenId, true);
-        if (cancelled) return;
-        if (!cid) {
-          clearAfaHighResLoading();
-          return;
-        }
-
-        if (await hasLocalHires(tokenId)) {
-          setAfaGatewayIndex(null);
-          setAfaHiresUrl(getAfaLocalHiresUrl(tokenId));
-          return;
-        }
-
-        const started = await beginAfaHiresAttempt(tokenId);
-        if (cancelled) return;
-        if (!started) scheduleAfaHiresRetry(tokenId);
-      } catch {
-        if (!cancelled) scheduleAfaHiresRetry(tokenId);
-      }
+      // Never keep a minted ape blurred: after the timeout show the thumbnail sharp,
+      // the hi-res still fades in when it arrives.
+      afaHiresTimerRef.current = window.setTimeout(clearAfaHighResLoading, HIRES_BLUR_TIMEOUT_MS);
+      const local = await hasLocalHires(tokenId);
+      if (cancelled) return;
+      setAfaHiresUrl(local ? getAfaLocalHiresUrl(tokenId) : getAfaServerHiresUrl(tokenId));
     };
 
     loadMetadata();
@@ -377,12 +301,12 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
 
     return () => {
       cancelled = true;
-      if (afaRetryTimerRef.current) {
-        clearTimeout(afaRetryTimerRef.current);
-        afaRetryTimerRef.current = null;
+      if (afaHiresTimerRef.current) {
+        clearTimeout(afaHiresTimerRef.current);
+        afaHiresTimerRef.current = null;
       }
     };
-  }, [open, apeData, beginAfaHiresAttempt, clearAfaHighResLoading, scheduleAfaHiresRetry]);
+  }, [open, apeData, clearAfaHighResLoading]);
 
   const handleNext = useCallback(() => {
     setActiveStep((prevStep) => Math.min(prevStep + 1, maxSteps - 1));
@@ -440,78 +364,35 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
     setDragOffset(0);
   }, [isMobile, activeStep, maxSteps, handleNext, handleBack]);
 
-  const tryNextAfaHiresGateway = useCallback(async (failedSrc) => {
-    if (!apeData?.isMinted) return false;
+  const isStaleEvent = (img) => {
+    const tokenId = currentTokenRef.current;
+    const src = img.currentSrc || img.src || '';
+    return tokenId == null
+      || !(src.includes(`/hires/${tokenId}.webp`) || src.includes(`tokenId=${tokenId}`));
+  };
 
-    const cid = await getAfaIpfsCid(apeData.tokenId, true);
-    const urls = getIpfsGatewayUrls(cid);
-    const currentIndex = afaGatewayIndex ?? findGatewayIndexForSrc(failedSrc, cid);
-
-    if (currentIndex >= 0) {
-      invalidateImageCached(urls[currentIndex]);
-      afaTriedGatewaysRef.current.add(currentIndex);
-    }
-
-    const nextIndex = getNextUntriedGatewayIndex(afaTriedGatewaysRef.current, urls.length);
-    if (nextIndex < 0) return false;
-
-    afaTriedGatewaysRef.current.add(nextIndex);
-    setAfaGatewayIndex(nextIndex);
-    setAfaHiresUrl(urls[nextIndex]);
-    setAfaHiresReady(false);
-    return true;
-  }, [apeData, afaGatewayIndex]);
-
-  const handleHiresImageLoad = useCallback(async (event) => {
-    if (!apeData?.isMinted) return;
-
-    const img = event.currentTarget;
-    const src = img.currentSrc || img.src;
-
-    if (!isValidHiresImage(img)) {
-      if (isLocalHiresSrc(src)) {
-        const started = await beginAfaHiresAttempt(apeData.tokenId);
-        if (!started) scheduleAfaHiresRetry(apeData.tokenId);
-        return;
-      }
-      await tryNextAfaHiresGateway(src);
+  const handleHiresImageLoad = useCallback((event) => {
+    if (!apeData?.isMinted || isStaleEvent(event.currentTarget)) return;
+    if (!isValidHiresImage(event.currentTarget)) {
+      clearAfaHighResLoading();
       return;
     }
-
-    const cid = await getAfaIpfsCid(apeData.tokenId, true);
-    if (cid && afaGatewayIndex != null && !isLocalHiresSrc(src)) {
-      cacheIpfsHit(cid, src, afaGatewayIndex);
-    }
-
-    afaRetryRoundRef.current = 0;
+    if (afaHiresTimerRef.current) clearTimeout(afaHiresTimerRef.current);
     setAfaHiresReady(true);
     clearAfaHighResLoading();
-  }, [
-    apeData,
-    afaGatewayIndex,
-    beginAfaHiresAttempt,
-    clearAfaHighResLoading,
-    scheduleAfaHiresRetry,
-    tryNextAfaHiresGateway,
-  ]);
+  }, [apeData, clearAfaHighResLoading]);
 
-  const handleHiresImageError = useCallback(async (event) => {
-    if (!apeData?.isMinted) return;
-
+  const handleHiresImageError = useCallback((event) => {
+    if (!apeData?.isMinted || isStaleEvent(event.currentTarget)) return;
     const src = event.currentTarget.currentSrc || event.currentTarget.src;
-
     if (isLocalHiresSrc(src)) {
-      const started = await beginAfaHiresAttempt(apeData.tokenId);
-      if (!started) scheduleAfaHiresRetry(apeData.tokenId);
+      setAfaHiresUrl(getAfaServerHiresUrl(apeData.tokenId));
       return;
     }
-
-    if (await tryNextAfaHiresGateway(src)) return;
-
     setAfaHiresUrl(null);
     setAfaHiresReady(false);
-    scheduleAfaHiresRetry(apeData.tokenId);
-  }, [apeData, beginAfaHiresAttempt, scheduleAfaHiresRetry, tryNextAfaHiresGateway]);
+    clearAfaHighResLoading();
+  }, [apeData, clearAfaHighResLoading]);
 
   const handleImageError = useCallback(async (stepIndex, event) => {
     if (!apeData) return;
@@ -593,7 +474,6 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
                 key={`${stepIndex}-hires-${afaHiresUrl}`}
                 image={afaHiresUrl}
                 alt={`${image.title} #${apeData.tokenId} hi-res`}
-                data-ipfs-gateway={afaGatewayIndex ?? undefined}
                 onLoad={handleHiresImageLoad}
                 onError={handleHiresImageError}
                 sx={{
