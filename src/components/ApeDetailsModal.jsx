@@ -238,6 +238,9 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
                 >
                   Mint to reveal
                 </a>
+                <a className="cta-dest" href="https://www.apefacingapes.com/" target="_blank" rel="noopener noreferrer">
+                  on apefacingapes.com ↗
+                </a>
               </>
             )}
 

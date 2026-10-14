@@ -14,6 +14,17 @@ export const parseSlug = (value) => {
   return SLUG_PATTERN.test(slug) ? slug : null;
 };
 
+/**
+ * Each slug resolves to ONE fixed target. Query params (e.g. ?to=) are ignored,
+ * so /go/* can never be used as an open redirect.
+ */
+export const targetForSlug = (slug) => {
+  if (typeof slug !== 'string') return null;
+  if (slug === 'editor' || slug.startsWith('editor-')) return 'editor';
+  if (slug === 'progress' || slug.startsWith('progress-')) return 'progress';
+  return 'mint';
+};
+
 export const parseTarget = (value) => {
   const raw = Array.isArray(value) ? value[0] : value;
   return Object.prototype.hasOwnProperty.call(GO_TARGETS, raw) ? raw : null;

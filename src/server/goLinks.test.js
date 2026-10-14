@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aggregateClicks, buildTargetUrl, clickPathname, parseClickPathname, parseSlug, parseTarget } from '../../api/lib/goLinks.js';
+import { aggregateClicks, buildTargetUrl, clickPathname, parseClickPathname, parseSlug, parseTarget, targetForSlug } from '../../api/lib/goLinks.js';
 import { buildIdSuggestions } from '../components/BlurLookup.jsx';
 
 describe('go links', () => {
@@ -9,6 +9,12 @@ describe('go links', () => {
     expect(parseTarget('__proto__')).toBeNull();
     expect(parseSlug('Launch-1')).toBe('launch-1');
     expect(parseSlug('../x')).toBeNull();
+  });
+  it('maps each slug to one fixed target (no ?to= override)', () => {
+    expect(targetForSlug('see-your-afa')).toBe('mint');
+    expect(targetForSlug('editor-share')).toBe('editor');
+    expect(targetForSlug('progress')).toBe('progress');
+    expect(buildTargetUrl(targetForSlug('x-post'), 'x-post')).toMatch(/^https:\/\/www\.apefacingapes\.com\//);
   });
   it('never points at the claim page and adds UTM', () => {
     const url = buildTargetUrl('mint', 'oct-drop');

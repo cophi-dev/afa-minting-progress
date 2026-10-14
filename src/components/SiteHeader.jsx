@@ -104,6 +104,7 @@ const SiteHeader = ({
 }) => {
   const headerRef = useRef(null);
   const [detailsOpen, setDetailsOpen] = useState(readDetailsOpen);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const latest = useLatestMints(8);
   const countReady = mintedCount > 0 || Boolean(updatedAt) || (!mintDataLoading && !fetchError);
   const mintPercent = countReady
@@ -205,15 +206,42 @@ const SiteHeader = ({
           <span className="details-chevron" aria-hidden="true">▾</span>
         </button>
 
-        <a
-          className="header-cta"
-          href={claimUrl('progress-header')}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Mint to reveal
-        </a>
+        <span className="header-cta-wrap">
+          <a
+            className="header-cta"
+            href={claimUrl('progress-header')}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Mint to reveal
+          </a>
+          <a className="cta-dest" href="https://www.apefacingapes.com/" target="_blank" rel="noopener noreferrer">
+            on apefacingapes.com ↗
+          </a>
+        </span>
       </div>
+
+      <p className="trust-line">
+        Unofficial community tracker · not affiliated with Yuga Labs ·{' '}
+        <button type="button" className="trust-about" aria-expanded={aboutOpen} onClick={() => setAboutOpen((v) => !v)}>
+          About
+        </button>
+      </p>
+
+      {aboutOpen && (
+        <section className="site-about" aria-label="About this site">
+          <p>
+            AFA Mint Progress is an unofficial, community-built tracker. It shows which of the 10,000 apes
+            already have an Ape Facing Ape and links to the editor. It never asks you to connect a wallet.
+          </p>
+          <p>
+            Minting happens only on the official site:{' '}
+            <a href="https://www.apefacingapes.com/" target="_blank" rel="noopener noreferrer">apefacingapes.com ↗</a>
+            {' · '}
+            <a href="https://x.com/ApeFacingApes" target="_blank" rel="noopener noreferrer">@ApeFacingApes ↗</a>
+          </p>
+        </section>
+      )}
 
       {fetchError && (
         <div className="mint-error" role="alert">
