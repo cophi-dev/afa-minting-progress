@@ -3,7 +3,7 @@ import { apeCopy, isMinted, parseApeId } from './lib/apeState.js';
 const SITE = 'https://afa-progress.com';
 const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export const renderApePage = ({ id, minted, version = '2' }) => {
+export const renderApePage = ({ id, minted, version = '3' }) => {
   const { title, subtitle } = apeCopy(id, minted);
   const url = `${SITE}/ape/${id}`;
   const og = `${SITE}/api/og-ape?id=${id}&v=${minted ? 'm' : 'u'}${version}`;

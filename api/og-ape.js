@@ -21,9 +21,9 @@ export default async function handler(req, res) {
     } else {
       const source = await fetch(`https://${host}/images/${id}.webp`);
       if (!source.ok) throw new Error(`source ${source.status}`);
-      ape = await blurAfa(Buffer.from(await source.arrayBuffer()), id, 'medium', // Large cards read blurrier than the small modal tile; 0.75 makes the
+      ape = await blurAfa(Buffer.from(await source.arrayBuffer()), id, 'medium', // Large cards read blurrier than the small modal tile; 0.6 makes the
       // 510px card look like 'medium' at its displayed size.
-      { size: 510, format: 'png', blurScale: 0.75 });
+      { size: 510, format: 'png', blurScale: 0.6 });
     }
     const { title, subtitle } = apeCopy(id, minted);
     const png = await renderOgCard({ ape, title, subtitle, footer: 'afa-progress.com' });
