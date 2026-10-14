@@ -6,6 +6,7 @@ import { loadBaycMapping } from './data/baycMetadata';
 import { prefetchImageCids } from './utils/imageUrls';
 import { startFaviconAnimation } from './utils/faviconAnimator';
 import App from './App';
+import './typography.css';
 
 prefetchMintStatus();
 loadBaycMapping();
