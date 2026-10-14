@@ -1,0 +1,20 @@
+/* Typography aligned with www.apefacingapes.com (preview, typography only) */
+body { font-family: var(--font-body); font-weight: 400; line-height: 1.5; }
+.MuiTypography-root, .MuiButtonBase-root, .MuiInputBase-root, .MuiChip-root, .MuiMenuItem-root { font-family: inherit; }
+.site-title, h1, h2, h3 {
+  font-family: var(--font-display); font-weight: 700; letter-spacing: 0; line-height: 0.95; text-transform: none;
+}
+.site-title { font-size: 26px; }
+.latest-toggle, .mint-percent, .mint-updated, .editor-link, .retry-button, .MuiButton-root {
+  font-family: var(--font-label); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px;
+}
+label { font-weight: 500; }
+.mint-count-number, .latest-mint-id {
+  font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0;
+}
+.site-tagline { font-family: var(--font-body); font-weight: 400; text-transform: none; letter-spacing: 0; }
+.mint-count-number { font-size: clamp(44px, 8vw, 72px); }
+.mint-count-total { font-family: var(--font-body); font-weight: 500; font-size: 18px; text-transform: none; letter-spacing: 0; color: rgba(255,255,255,0.7); }
+.legend-item, .latest-strip-title, .latest-mints-label, .latest-block > h2, .latest-block > h3, .latest-title {
+  font-family: var(--font-label); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-size: 11px; color: rgba(255,255,255,0.6);
+}
