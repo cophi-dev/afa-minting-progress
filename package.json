@@ -10,8 +10,10 @@
     "@mui/material": "^5.16.13",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.1",
+    "opentype.js": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "sharp": "^0.34.4",
     "zod": "^3.25.76"
   },
   "devDependencies": {
@@ -20,7 +22,6 @@
     "@testing-library/user-event": "^13.5.0",
     "@vitejs/plugin-react": "^4.7.0",
     "gifenc": "^1.0.3",
-    "sharp": "^0.34.4",
     "vite": "^6.3.6",
     "vitest": "^3.2.4"
   },

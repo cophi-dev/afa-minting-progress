@@ -413,3 +413,11 @@
     flex-shrink: 0;
   }
 }
+
+@media (max-width: 768px) {
+  .editor-link.blur-open {
+    display: inline-flex;
+    min-height: 40px;
+    padding: 0 12px;
+  }
+}

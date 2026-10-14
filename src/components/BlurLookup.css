@@ -1,0 +1,154 @@
+.blur-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.blur-dialog {
+  position: relative;
+  width: min(420px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: #121418;
+  color: #f0f2f5;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.blur-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: rgba(240, 242, 245, 0.7);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.blur-title {
+  margin: 0 0 6px;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+.blur-lede { margin: 0 0 16px; font-size: 14px; color: rgba(240, 242, 245, 0.7); }
+
+.blur-form { position: relative; display: flex; gap: 8px; }
+
+.blur-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+}
+
+.blur-go {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #f5c542;
+  color: #0b0b0c;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.blur-suggestions {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 70px;
+  z-index: 2;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: #181b20;
+}
+
+.blur-suggestions button {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.blur-suggestions button:hover { background: rgba(255, 255, 255, 0.06); }
+
+.blur-tag { font-size: 11px; color: #6ee7a0; font-weight: 600; }
+
+.blur-result { margin-top: 20px; text-align: center; }
+
+.blur-image {
+  width: 100%;
+  max-width: 256px;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  image-rendering: auto;
+  background: #1b1e24;
+}
+
+.blur-caption { margin: 12px 0; font-weight: 600; }
+
+.blur-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: #f5c542;
+  color: #0b0b0c;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.blur-status-minted { color: #6ee7a0; }
+
+.blur-share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-left: 8px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.blur-permalink {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: rgba(240, 242, 245, 0.55);
+}
