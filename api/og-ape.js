@@ -13,9 +13,10 @@ export default async function handler(req, res) {
     const host = 'afa-progress.com'; // static assets; also works behind preview protection
     let ape;
     if (minted) {
+      const isImage = (r) => r.ok && (r.headers.get('content-type') || '').startsWith('image/');
       let source = await fetch(`https://${host}/hires/${id}.webp`);
-      if (!source.ok) source = await fetch(`https://${host}/images/${id}.webp`);
-      if (!source.ok) throw new Error(`source ${source.status}`);
+      if (!isImage(source)) source = await fetch(`https://${host}/images/${id}.webp`);
+      if (!isImage(source)) throw new Error(`source ${source.status}`);
       ape = Buffer.from(await source.arrayBuffer());
     } else {
       const source = await fetch(`https://${host}/images/${id}.webp`);
