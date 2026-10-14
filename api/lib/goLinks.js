@@ -19,10 +19,14 @@ export const parseTarget = (value) => {
   return Object.prototype.hasOwnProperty.call(GO_TARGETS, raw) ? raw : null;
 };
 
+/** Slugs used by links on afa-progress.com itself (not shared on X). */
+export const INTERNAL_SLUGS = new Set(['ape-page', 'see-your-afa']);
+
 export const buildTargetUrl = (target, slug) => {
   const url = new URL(GO_TARGETS[target]);
-  url.searchParams.set('utm_source', 'x');
-  url.searchParams.set('utm_medium', 'social');
+  const internal = INTERNAL_SLUGS.has(slug);
+  url.searchParams.set('utm_source', internal ? 'afa-progress' : 'x');
+  url.searchParams.set('utm_medium', internal ? 'referral' : 'social');
   url.searchParams.set('utm_campaign', slug);
   return url.toString();
 };

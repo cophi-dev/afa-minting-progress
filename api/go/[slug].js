@@ -13,13 +13,17 @@ const logClick = async (slug, target, req) => {
     target,
     ts: Date.now(),
     country: req.headers['x-vercel-ip-country'] || null,
-    referer: req.headers.referer ? String(req.headers.referer).slice(0, 200) : null,
+    referer: refererHost(req.headers.referer),
   }), {
     access: 'private',
     token,
     addRandomSuffix: false,
     contentType: 'application/json',
   });
+};
+
+const refererHost = (value) => {
+  try { return value ? new URL(String(value)).host.slice(0, 100) || null : null; } catch { return null; }
 };
 
 export default async function handler(req, res) {

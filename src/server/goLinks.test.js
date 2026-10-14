@@ -15,6 +15,10 @@ describe('go links', () => {
     expect(url).toBe('https://www.apefacingapes.com/?utm_source=x&utm_medium=social&utm_campaign=oct-drop');
     expect(url).not.toContain('claim');
   });
+  it('tags internal slugs as referral', () => {
+    expect(buildTargetUrl('mint', 'ape-page')).toBe('https://www.apefacingapes.com/?utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page');
+    expect(buildTargetUrl('editor', 'see-your-afa')).toContain('utm_source=afa-progress&utm_medium=referral');
+  });
   it('round-trips click pathnames and aggregates', () => {
     const p = clickPathname('oct-drop', 'editor', Date.UTC(2026, 9, 14), 0.5);
     expect(parseClickPathname(p)).toMatchObject({ slug: 'oct-drop', target: 'editor' });
