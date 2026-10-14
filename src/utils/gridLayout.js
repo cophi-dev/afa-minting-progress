@@ -14,8 +14,17 @@ export const GRID_WRAPPER_PADDING = {
 export const getGridWrapperPadding = (isMobile = window.innerWidth <= 768) =>
   (isMobile ? GRID_WRAPPER_PADDING.mobile : GRID_WRAPPER_PADDING.desktop);
 
-export const getDefaultZoom = (isMobile = window.innerWidth <= 768) =>
-  (isMobile ? MOBILE_DEFAULT_ZOOM : DESKTOP_DEFAULT_ZOOM);
+/** Mobile shows 6 columns (5 on very narrow screens) so apes stay recognisable. */
+export const MOBILE_COLUMNS = 6;
+
+export const getMobileZoom = (screenWidth = window.innerWidth) => {
+  const available = screenWidth - GRID_WRAPPER_PADDING.mobile * 2;
+  const columns = screenWidth < 340 ? 5 : MOBILE_COLUMNS;
+  return Math.max(MOBILE_DEFAULT_ZOOM, Math.floor(available / columns));
+};
+
+export const getDefaultZoom = (isMobile = window.innerWidth <= 768, screenWidth = window.innerWidth) =>
+  (isMobile ? getMobileZoom(screenWidth) : DESKTOP_DEFAULT_ZOOM);
 
 export const computeVisibleRange = (scrollTop, viewportHeight, zoom, totalRows) => {
   const rowHeight = zoom;

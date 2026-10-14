@@ -298,3 +298,24 @@
     max-height: min(82dvh, 520px) !important;
   }
 }
+
+/* Hide the shuffle/controls bar while scrolling down the grid; it returns on scroll up. */
+.site-tools {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.tools-hidden .site-tools {
+  transform: translateX(-50%) translateY(calc(100% + 32px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tools-hidden .site-tools.mobile {
+  transform: translateY(calc(100% + 32px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-tools {
+    transition: none;
+  }
+}

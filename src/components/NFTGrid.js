@@ -189,8 +189,15 @@ function NFTGrid() {
     if (!el) return undefined;
 
     let rafId = null;
+    let lastTop = el.scrollTop;
+    const root = document.documentElement;
     const onScroll = () => {
       setCellTip((current) => (current ? null : current));
+      const top = el.scrollTop;
+      const delta = top - lastTop;
+      if (top < 40 || delta < -6) root.classList.remove('tools-hidden');
+      else if (delta > 6) root.classList.add('tools-hidden');
+      if (Math.abs(delta) > 6 || top < 40) lastTop = top;
       if (rafId) return;
       rafId = requestAnimationFrame(() => {
         rafId = null;
@@ -203,6 +210,7 @@ function NFTGrid() {
     return () => {
       el.removeEventListener('scroll', onScroll);
       if (rafId) cancelAnimationFrame(rafId);
+      root.classList.remove('tools-hidden');
     };
   }, [syncVisibleRange]);
 
