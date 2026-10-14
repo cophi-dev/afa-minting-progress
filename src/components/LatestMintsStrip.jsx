@@ -11,17 +11,31 @@ const timeAgo = (unix) => {
   return `${Math.floor(h / 24)}d ago`;
 };
 
-const LatestMintsStrip = ({ onMintClick, limit = 8 }) => {
-  const [latest, setLatest] = useState(null);
+const latestCache = new Map();
+
+export const useLatestMints = (limit = 8, enabled = true) => {
+  const [latest, setLatest] = useState(() => latestCache.get(limit) ?? null);
 
   useEffect(() => {
+    if (!enabled) return undefined;
     let cancelled = false;
     fetch(`/api/latest-mints?limit=${limit}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (!cancelled && data?.latest) setLatest(data.latest); })
+      .then((data) => {
+        if (!data?.latest) return;
+        latestCache.set(limit, data.latest);
+        if (!cancelled) setLatest(data.latest);
+      })
       .catch(() => {});
     return () => { cancelled = true; };
-  }, [limit]);
+  }, [limit, enabled]);
+
+  return latest;
+};
+
+const LatestMintsStrip = ({ onMintClick, limit = 8, latest: provided = null }) => {
+  const fetched = useLatestMints(limit, !provided);
+  const latest = provided ?? fetched;
 
   if (!latest || latest.length === 0) return null;
 

@@ -1,9 +1,9 @@
 :root {
-  --bg-primary: #0d0f12;
+  --bg-primary: #0b0b0c;
   --bg-secondary: #161a20;
   --bg-elevated: rgba(22, 26, 32, 0.92);
-  --accent: #6ee7a0;
-  --accent-dim: rgba(110, 231, 160, 0.15);
+  --accent: #f5c542;
+  --accent-dim: rgba(245, 197, 66, 0.15);
   --text-primary: #f0f2f5;
   --text-secondary: #8b95a5;
   --border-subtle: rgba(255, 255, 255, 0.08);
@@ -101,7 +101,7 @@ html, body, #root {
 .minted {
   opacity: var(--minted-opacity);
   z-index: 1;
-  box-shadow: inset 0 0 0 1px rgba(110, 231, 160, 0.75), 0 0 6px rgba(110, 231, 160, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(245, 197, 66, 0.75), 0 0 6px rgba(245, 197, 66, 0.35);
 }
 
 .minted img {
@@ -162,7 +162,7 @@ html, body, #root {
     outline: 2px solid var(--accent);
     outline-offset: -1px;
     border-radius: 2px;
-    box-shadow: 0 0 12px var(--accent-dim), 0 0 4px rgba(110, 231, 160, 0.2);
+    box-shadow: 0 0 12px var(--accent-dim), 0 0 4px rgba(245, 197, 66, 0.2);
   }
 
   .nft-cell.unminted:hover {
@@ -191,7 +191,7 @@ html, body, #root {
 
 @keyframes selectedPulse {
   0%, 100% { box-shadow: 0 0 0 2px var(--text-primary), 0 0 8px var(--accent-dim); }
-  50% { box-shadow: 0 0 0 2px var(--accent), 0 0 16px rgba(110, 231, 160, 0.3); }
+  50% { box-shadow: 0 0 0 2px var(--accent), 0 0 16px rgba(245, 197, 66, 0.3); }
 }
 
 /* Loading screen */
@@ -238,7 +238,7 @@ html, body, #root {
 
 .progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), #34d399);
+  background: linear-gradient(90deg, var(--accent), #e0a82e);
   transition: width 0.4s ease;
   border-radius: 2px;
 }
@@ -264,7 +264,7 @@ html, body, #root {
     left: 0;
     right: 0;
     padding: 8px 10px;
-    background: rgba(13, 15, 18, 0.94);
+    background: rgba(11, 11, 12, 0.94);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     max-height: min(48dvh, 420px);
     overflow: auto;
@@ -273,7 +273,7 @@ html, body, #root {
 
   .nft-grid-wrapper {
     padding: 2px;
-    top: calc(var(--site-header-offset, 128px) + var(--mobile-trait-offset, 76px));
+    top: calc(var(--site-header-offset, 128px) + var(--mobile-trait-offset, 0px));
     bottom: var(--site-tools-offset, 44px);
     touch-action: pan-y;
   }

@@ -169,7 +169,7 @@ const TraitFilter = ({
               display: 'block',
               mt: 0.25,
               fontSize: isMobile ? '0.75rem' : '0.6875rem',
-              color: activeFilterCount > 0 ? '#6ee7a0' : 'rgba(255,255,255,0.45)',
+              color: activeFilterCount > 0 ? '#f5c542' : 'rgba(255,255,255,0.45)',
               fontWeight: activeFilterCount > 0 ? 600 : 400,
               fontVariantNumeric: 'tabular-nums',
             }}
@@ -325,7 +325,7 @@ const TraitFilter = ({
                     '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
                     '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
                     '&.Mui-focused fieldset': {
-                      borderColor: '#6ee7a0',
+                      borderColor: '#f5c542',
                       borderWidth: 1,
                     },
                   },
