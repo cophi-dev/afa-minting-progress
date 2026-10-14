@@ -118,7 +118,7 @@ const SiteHeader = ({
     <header className="site-header" ref={headerRef}>
       <div className="site-header-top">
         <a className="site-brand" href="/" aria-label="AFA Mint Progress home">
-          <img className="site-logo" src="/logo.png" alt="Ape Facing Apes" width="44" height="44" />
+          <img className="site-logo" src="/logo-mark.png" alt="Ape Facing Apes" width="48" height="41" />
           <h1 className="site-title">Mint Progress</h1>
         </a>
         <div className="site-header-actions">
