@@ -21,7 +21,7 @@ export const DEFAULT_BLUR = 'medium';
  * Low-res, blurred AFA preview. Silhouette, colours and gaze stay readable;
  * details do not. Output is always 128px.
  */
-export const blurAfa = async (input, seed = 1, level = DEFAULT_BLUR, { size = OUT, format = 'webp' } = {}) => {
+export const blurAfa = async (input, seed = 1, level = DEFAULT_BLUR, { size = OUT, format = 'webp', blurScale = 1 } = {}) => {
   const { base, sigma, noise: amp } = BLUR_LEVELS[level] ?? BLUR_LEVELS[DEFAULT_BLUR];
   const sharp = (await import('sharp')).default;
   const tiny = await sharp(input).resize(base, base, { fit: 'cover' }).removeAlpha().raw().toBuffer();
@@ -39,7 +39,7 @@ export const blurAfa = async (input, seed = 1, level = DEFAULT_BLUR, { size = OU
     : await sharp(noiseLayer).resize(size, size, { kernel: 'nearest' }).png().toBuffer();
   const img = sharp(tiny, { raw: { width: base, height: base, channels: 3 } })
     .resize(size, size, { kernel: 'cubic' })
-    .blur(sigma * (size / base) / 2)
+    .blur(sigma * (size / base) / 2 * blurScale)
     .composite([{ input: grain, blend: 'soft-light' }]);
   return (format === 'png' ? img.png() : img.webp({ quality: 60 })).toBuffer();
 };
