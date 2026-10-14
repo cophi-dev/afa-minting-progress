@@ -327,6 +327,21 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
       setBaycMetadata(metadata);
       setMetadataLoading(false);
 
+      // Full-resolution original via Alchemy's NFT CDN (server-side key); public IPFS gateways as fallback.
+      const fullRes = `/api/bayc-image?tokenId=${tokenId}`;
+      const fullResOk = await new Promise((resolve) => {
+        const probe = new Image();
+        const timer = setTimeout(() => resolve(false), 12000);
+        probe.onload = () => { clearTimeout(timer); resolve(probe.naturalWidth >= MIN_HIRES_DIMENSION); };
+        probe.onerror = () => { clearTimeout(timer); resolve(false); };
+        probe.src = fullRes;
+      });
+      if (cancelled) return;
+      if (fullResOk) {
+        setBaycImageUrl(fullRes);
+        return;
+      }
+
       const baycCid = metadata?.image?.startsWith('ipfs://') ? metadata.image.slice(7) : null;
       if (!baycCid) return;
 

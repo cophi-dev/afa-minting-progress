@@ -35,8 +35,8 @@
 }
 
 .site-logo {
-  width: 44px;
-  height: 44px;
+  width: auto;
+  height: 40px;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -397,7 +397,7 @@
   }
 
   .site-logo {
-    width: 34px;
+    width: auto;
     height: 34px;
   }
 
