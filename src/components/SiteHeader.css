@@ -391,7 +391,7 @@
 }
 
 
-/* Trust signals: destination hint, unofficial line, About */
+/* Trust signals: destination hint, disclaimer line, About */
 .header-cta-wrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
 .header-compact .header-cta-wrap { margin-left: auto; }
 .header-compact .header-cta-wrap .header-cta { margin-left: 0; }
@@ -402,14 +402,14 @@
 }
 .cta-dest:hover { color: #fff; text-decoration: underline; }
 .trust-line {
-  margin: 4px 0 0; font-family: 'Barlow', ui-sans-serif, system-ui, sans-serif;
+  margin: 4px 0 0; padding: 0; align-self: flex-start; width: 100%; text-align: left; font-family: 'Barlow', ui-sans-serif, system-ui, sans-serif;
   font-size: 11px; line-height: 1.4; color: rgba(255,255,255,0.5);
 }
 .trust-about {
-  background: none; border: 0; padding: 0; font: inherit; color: rgba(255,255,255,0.75);
+  background: none; border: 0; padding: 0; font: inherit; color: inherit;
   text-decoration: underline; cursor: pointer;
 }
-.trust-about:hover { color: #f5c542; }
+.trust-about:hover { color: inherit; }
 .site-about {
   margin: 8px 0 0; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;
   font-family: 'Barlow', ui-sans-serif, system-ui, sans-serif; font-size: 13px; line-height: 1.5;

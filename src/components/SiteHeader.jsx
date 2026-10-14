@@ -215,14 +215,11 @@ const SiteHeader = ({
           >
             Mint to reveal
           </a>
-          <a className="cta-dest" href="https://www.apefacingapes.com/" target="_blank" rel="noopener noreferrer">
-            on apefacingapes.com ↗
-          </a>
         </span>
       </div>
 
       <p className="trust-line">
-        Unofficial community tracker · not affiliated with Yuga Labs ·{' '}
+        Built by the Ape Facing Apes team · not affiliated with Yuga Labs ·{' '}
         <button type="button" className="trust-about" aria-expanded={aboutOpen} onClick={() => setAboutOpen((v) => !v)}>
           About
         </button>
@@ -231,7 +228,7 @@ const SiteHeader = ({
       {aboutOpen && (
         <section className="site-about" aria-label="About this site">
           <p>
-            AFA Mint Progress is an unofficial, community-built tracker. It shows which of the 10,000 apes
+            AFA Mint Progress is built by the Ape Facing Apes team. It shows which of the 10,000 apes
             already have an Ape Facing Ape and links to the editor. It never asks you to connect a wallet.
           </p>
           <p>

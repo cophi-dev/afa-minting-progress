@@ -11,7 +11,7 @@ export const renderApePage = ({ id, minted, version = '3' }) => {
   const fallback = `/images/${id}.webp`;
   const cta = minted
     ? `<a class="cta" href="https://afa-editor.app/?tokenId=${id}&utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page">Open in the editor</a>`
-    : `<a class="cta" href="/go/ape-page" rel="noopener">Mint to reveal</a><a class="hint" href="https://www.apefacingapes.com/" rel="noopener">on apefacingapes.com ↗</a>`;
+    : `<a class="cta" href="https://www.apefacingapes.com/claim?utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page" rel="noopener">Mint to reveal</a><a class="hint" href="https://www.apefacingapes.com/" rel="noopener">on apefacingapes.com ↗</a>`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,7 +61,7 @@ export const renderApePage = ({ id, minted, version = '3' }) => {
 ${cta}
 <a class="more" href="/">See all 10,000 apes</a>
 </main>
-<footer>Unofficial community tracker · not affiliated with Yuga Labs<br />Ape Facing Apes: <a href="https://www.apefacingapes.com/" rel="noopener">apefacingapes.com</a> · <a href="https://x.com/ApeFacingApes" rel="noopener">@ApeFacingApes</a></footer>
+<footer>Built by the Ape Facing Apes team · not affiliated with Yuga Labs<br />Ape Facing Apes: <a href="https://www.apefacingapes.com/" rel="noopener">apefacingapes.com</a> · <a href="https://x.com/ApeFacingApes" rel="noopener">@ApeFacingApes</a></footer>
 </body>
 </html>`;
 };

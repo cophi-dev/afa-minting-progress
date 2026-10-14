@@ -1,7 +1,8 @@
+import { claimUrl } from '../constants/links';
 import React, { useMemo, useState } from 'react';
 import './BlurLookup.css';
 
-const MINT_URL = 'https://afa-mint-progress.vercel.app/go/see-your-afa';
+const MINT_URL = claimUrl('see-your-afa');
 const EDITOR_URL = (id) => `https://afa-editor.app/?tokenId=${id}&utm_source=afa-progress&utm_medium=referral&utm_campaign=see-your-afa`;
 
 /** Minted IDs first, then the rest, both matching the typed prefix. */
