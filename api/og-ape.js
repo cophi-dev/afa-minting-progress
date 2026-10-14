@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   }
   try {
     const minted = await isMinted(id);
-    const host = 'afa-progress.com'; // static assets; also works behind preview protection
+    const host = 'afa-mint-progress.vercel.app'; // static assets; also works behind preview protection
     let ape;
     if (minted) {
       const isImage = (r) => r.ok && (r.headers.get('content-type') || '').startsWith('image/');
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       { size: 510, format: 'png', blurScale: 0.6 });
     }
     const { title, subtitle } = apeCopy(id, minted);
-    const png = await renderOgCard({ ape, title, subtitle, footer: 'afa-progress.com' });
+    const png = await renderOgCard({ ape, title, subtitle, footer: 'afa-mint-progress.vercel.app' });
     res.setHeader('Content-Type', 'image/png');
     res.setHeader('Cache-Control', minted
       ? 'public, max-age=3600, s-maxage=604800'

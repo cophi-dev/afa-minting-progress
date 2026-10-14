@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import './BlurLookup.css';
 
-const MINT_URL = 'https://afa-progress.com/go/see-your-afa?to=mint';
+const MINT_URL = 'https://afa-mint-progress.vercel.app/go/see-your-afa?to=mint';
 const EDITOR_URL = (id) => `https://afa-editor.app/?tokenId=${id}&utm_source=afa-progress&utm_medium=referral&utm_campaign=see-your-afa`;
 
 /** Minted IDs first, then the rest, both matching the typed prefix. */
@@ -86,8 +86,8 @@ const BlurLookup = ({ open, onClose, mintedIds }) => {
                 <a className="blur-cta" href={MINT_URL} target="_blank" rel="noopener noreferrer">Mint on apefacingapes.com</a>
               </>
             )}
-            <a className="blur-share" href={`https://x.com/intent/post?text=${encodeURIComponent(`${result.minted ? `Ape #${result.id} is facing you.` : `Ape #${result.id} is still looking the other way.`} @ApeFacingApes\n\nhttps://afa-progress.com/ape/${result.id}?utm_source=x&utm_medium=social&utm_campaign=see-your-afa`)}`} target="_blank" rel="noopener noreferrer">Share on X</a>
-            <a className="blur-permalink" href={`/ape/${result.id}`}>afa-progress.com/ape/{result.id}</a>
+            <a className="blur-share" href={`https://x.com/intent/post?text=${encodeURIComponent(`${result.minted ? `Ape #${result.id} is facing you.` : `Ape #${result.id} is still looking the other way.`} @ApeFacingApes\n\nhttps://afa-mint-progress.vercel.app/ape/${result.id}?utm_source=x&utm_medium=social&utm_campaign=see-your-afa`)}`} target="_blank" rel="noopener noreferrer">Share on X</a>
+            <a className="blur-permalink" href={`/ape/${result.id}`}>afa-mint-progress.vercel.app/ape/{result.id}</a>
           </div>
         )}
       </div>
