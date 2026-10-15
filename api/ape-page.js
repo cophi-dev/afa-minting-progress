@@ -3,15 +3,27 @@ import { apeCopy, isMinted, parseApeId } from './lib/apeState.js';
 const SITE = 'https://afa-mint-progress.vercel.app';
 const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-export const renderApePage = ({ id, minted, version = '3' }) => {
+/** Source for /ape click pings: landing utm only (part of the CDN cache key; referer is not, so it is not used). */
+export const apePageSource = (query = {}) => {
+  const clean = (v, max) => String(Array.isArray(v) ? v[0] : v || '').toLowerCase().replace(/[^a-z0-9.-]/g, '').slice(0, max);
+  const src = clean(query.utm_source, 24);
+  if (!src) return 'direct';
+  const campaign = clean(query.utm_campaign, 32);
+  return campaign ? `${src}~${campaign}` : src;
+};
+
+// No script on this page: clicks are counted with the <a ping> attribute (POST to /api/event, no cookies stored).
+const pingAttr = (event, id, source) => ` ping="/api/event?site=progress&amp;event=${event}&amp;label=${id}&amp;source=${encodeURIComponent(source)}"`;
+
+export const renderApePage = ({ id, minted, version = '3', source = 'direct' }) => {
   const { title, subtitle } = apeCopy(id, minted);
   const url = `${SITE}/ape/${id}`;
   const og = `${SITE}/api/og-ape?id=${id}&v=${minted ? 'm' : 'u'}${version}`;
   const image = minted ? `/hires/${id}.webp` : `/api/blur-preview?id=${id}`;
   const fallback = `/images/${id}.webp`;
   const cta = minted
-    ? `<a class="cta" data-ev="open_editor" data-label="${id}" href="https://afa-editor.app/?tokenId=${id}&utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page">Open in the editor</a>`
-    : `<a class="cta" data-ev="mint_cta_click" data-label="${id}" href="https://www.apefacingapes.com/claim?utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page" rel="noopener">Mint to reveal</a><a class="hint" href="https://www.apefacingapes.com/" rel="noopener">on apefacingapes.com ↗</a>`;
+    ? `<a class="cta"${pingAttr('open_editor', id, source)} href="https://afa-editor.app/?tokenId=${id}&utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page">Open in the editor</a>`
+    : `<a class="cta"${pingAttr('mint_cta_click', id, source)} href="https://www.apefacingapes.com/claim?utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page" rel="noopener">Mint to reveal</a><a class="hint" href="https://www.apefacingapes.com/" rel="noopener">on apefacingapes.com ↗</a>`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,7 +74,6 @@ ${cta}
 <a class="more" href="/">See all 10,000 apes</a>
 </main>
 <footer>Built by the Ape Facing Apes team · not affiliated with Yuga Labs<br />Ape Facing Apes: <a href="https://www.apefacingapes.com/" rel="noopener">apefacingapes.com</a> · <a href="https://x.com/ApeFacingApes" rel="noopener">@ApeFacingApes</a></footer>
-<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-ev]');if(!a||!navigator.sendBeacon)return;var s='direct';try{s=sessionStorage.getItem('afa.src');if(!s){var u=new URL(location.href),q=(u.searchParams.get('utm_source')||'').toLowerCase().replace(/[^a-z0-9.-]/g,'').slice(0,24),c=(u.searchParams.get('utm_campaign')||'').toLowerCase().replace(/[^a-z0-9.-]/g,'').slice(0,32),r=document.referrer?new URL(document.referrer).hostname.replace(/^www\\./,''):'';s=q?(c?q+'~'+c:q):(r&&r!==location.hostname?r:'direct');sessionStorage.setItem('afa.src',s)}}catch(_){s=s||'direct'}try{navigator.sendBeacon('/api/event',new Blob([JSON.stringify({site:'progress',event:a.getAttribute('data-ev'),label:a.getAttribute('data-label'),source:s})],{type:'text/plain'}))}catch(_){}},true);</script>
 </body>
 </html>`;
 };
@@ -81,5 +92,5 @@ export default async function handler(req, res) {
   }
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=3600');
-  return res.status(200).send(renderApePage({ id, minted }));
+  return res.status(200).send(renderApePage({ id, minted, source: apePageSource(req.query) }));
 }

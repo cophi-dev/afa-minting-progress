@@ -22,7 +22,8 @@ export default async function handler(req, res) {
   if (origin && !ALLOWED_ORIGINS.has(origin)) return res.status(204).end();
   if (BOT_UA.test(String(req.headers['user-agent'] || ''))) return res.status(204).end();
 
-  const event = parseEvent(readBody(req));
+  // sendBeacon sends JSON as text/plain; <a ping> sends 'PING' with the event in the query string.
+  const event = parseEvent(readBody(req) || req.query);
   const token = process.env.BLOB_READ_WRITE_TOKEN;
   if (event && token) {
     try {

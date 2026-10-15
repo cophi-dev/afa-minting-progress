@@ -56,3 +56,15 @@ describe('event source', () => {
     expect(agg.bySite.editor.share.bySource.direct).toBe(1);
   });
 });
+
+import { apePageSource, renderApePage } from '../../api/ape-page.js';
+
+describe('/ape page click pings', () => {
+  it('uses <a ping> (no script) with landing utm source', () => {
+    const html = renderApePage({ id: 1234, minted: false, source: apePageSource({ utm_source: 'X', utm_campaign: 'oct-drop' }) });
+    expect(html).not.toContain('<script');
+    expect(html).toContain('ping="/api/event?site=progress&amp;event=mint_cta_click&amp;label=1234&amp;source=x~oct-drop"');
+    expect(apePageSource({})).toBe('direct');
+    expect(parseEvent({ site: 'progress', event: 'mint_cta_click', label: '1234', source: 'x~oct-drop' })).toMatchObject({ source: 'x~oct-drop' });
+  });
+});
