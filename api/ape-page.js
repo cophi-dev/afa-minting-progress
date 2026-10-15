@@ -62,7 +62,7 @@ ${cta}
 <a class="more" href="/">See all 10,000 apes</a>
 </main>
 <footer>Built by the Ape Facing Apes team · not affiliated with Yuga Labs<br />Ape Facing Apes: <a href="https://www.apefacingapes.com/" rel="noopener">apefacingapes.com</a> · <a href="https://x.com/ApeFacingApes" rel="noopener">@ApeFacingApes</a></footer>
-<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-ev]');if(!a||!navigator.sendBeacon)return;try{navigator.sendBeacon('/api/event',new Blob([JSON.stringify({site:'progress',event:a.getAttribute('data-ev'),label:a.getAttribute('data-label')})],{type:'text/plain'}))}catch(_){}},true);</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-ev]');if(!a||!navigator.sendBeacon)return;var s='direct';try{s=sessionStorage.getItem('afa.src');if(!s){var u=new URL(location.href),q=(u.searchParams.get('utm_source')||'').toLowerCase().replace(/[^a-z0-9.-]/g,'').slice(0,24),c=(u.searchParams.get('utm_campaign')||'').toLowerCase().replace(/[^a-z0-9.-]/g,'').slice(0,32),r=document.referrer?new URL(document.referrer).hostname.replace(/^www\\./,''):'';s=q?(c?q+'~'+c:q):(r&&r!==location.hostname?r:'direct');sessionStorage.setItem('afa.src',s)}}catch(_){s=s||'direct'}try{navigator.sendBeacon('/api/event',new Blob([JSON.stringify({site:'progress',event:a.getAttribute('data-ev'),label:a.getAttribute('data-label'),source:s})],{type:'text/plain'}))}catch(_){}},true);</script>
 </body>
 </html>`;
 };
