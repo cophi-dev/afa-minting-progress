@@ -11,7 +11,7 @@ const APE_ID = /^(?:\d|[1-9]\d{1,3})$/;
 const LABELS = {
   mint_cta_click: (v) => APE_ID.test(v) || v === 'none',
   share: (v) => v === 'x' || v === 'link',
-  download: (v) => v === 'png' || v === 'gif' || v === 'none',
+  download: (v) => v === 'square' || v === 'wide' || v === 'none',
   apefest_toggle: (v) => v === 'on' || v === 'off',
   ape_select: (v) => v === 'minted' || v === 'unminted',
   open_editor: (v) => APE_ID.test(v) || v === 'none',

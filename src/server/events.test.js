@@ -6,6 +6,7 @@ describe('click events', () => {
     expect(parseEvent({ site: 'editor', event: 'mint_cta_click', label: '1234' })).toEqual({ site: 'editor', event: 'mint_cta_click', label: '1234' });
     expect(parseEvent({ site: 'progress', event: 'mint_cta_click' })).toMatchObject({ label: 'none' });
     expect(parseEvent({ site: 'editor', event: 'share', label: 'x' })).not.toBeNull();
+    expect(parseEvent({ site: 'editor', event: 'download', label: 'wide' })).not.toBeNull();
     expect(parseEvent({ site: 'editor', event: 'share', label: 'mail' })).toBeNull();
     expect(parseEvent({ site: 'editor', event: 'open_editor' })).toBeNull();
     expect(parseEvent({ site: 'evil', event: 'share', label: 'x' })).toBeNull();
