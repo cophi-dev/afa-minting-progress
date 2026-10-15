@@ -1,6 +1,7 @@
 import { claimUrl } from '../constants/links';
 import React, { useMemo, useState } from 'react';
 import './BlurLookup.css';
+import { track } from '../utils/track';
 
 const MINT_URL = claimUrl('see-your-afa');
 const EDITOR_URL = (id) => `https://afa-editor.app/?tokenId=${id}&utm_source=afa-progress&utm_medium=referral&utm_campaign=see-your-afa`;
@@ -38,6 +39,7 @@ const BlurLookup = ({ open, onClose, mintedIds }) => {
     setInput(String(id));
     setFocused(false);
     setResult({ id, minted: mintedIds.has(id) });
+    track('ape_select', mintedIds.has(id) ? 'minted' : 'unminted');
   };
 
   return (
@@ -78,16 +80,16 @@ const BlurLookup = ({ open, onClose, mintedIds }) => {
               <>
                 <img className="blur-image" src={`/hires/${result.id}.webp`} onError={(e) => { if (!e.currentTarget.dataset.fb) { e.currentTarget.dataset.fb = '1'; e.currentTarget.src = `/images/${result.id}.webp`; } }} alt={`AFA #${result.id}`} width="256" height="256" />
                 <p className="blur-caption">AFA #{result.id} is <span className="blur-status-minted">minted</span>.</p>
-                <a className="blur-cta" href={EDITOR_URL(result.id)} target="_blank" rel="noopener noreferrer">Open in the editor</a>
+                <a className="blur-cta" href={EDITOR_URL(result.id)} target="_blank" rel="noopener noreferrer" onClick={() => track('open_editor', result.id)}>Open in the editor</a>
               </>
             ) : (
               <>
                 <img className="blur-image is-blurred" src={`/api/blur-preview?id=${result.id}`} alt={`Blurred preview of AFA #${result.id}`} width="256" height="256" />
                 <p className="blur-caption">AFA #{result.id}: Mint to reveal.</p>
-                <a className="blur-cta" href={MINT_URL} target="_blank" rel="noopener noreferrer">Mint on apefacingapes.com</a>
+                <a className="blur-cta" href={MINT_URL} target="_blank" rel="noopener noreferrer" onClick={() => track('mint_cta_click', result.id)}>Mint on apefacingapes.com</a>
               </>
             )}
-            <a className="blur-share" href={`https://x.com/intent/post?text=${encodeURIComponent(`${result.minted ? `Ape #${result.id} is facing you.` : `Ape #${result.id} is still looking the other way.`} @ApeFacingApes\n\nhttps://afa-mint-progress.vercel.app/ape/${result.id}?utm_source=x&utm_medium=social&utm_campaign=see-your-afa`)}`} target="_blank" rel="noopener noreferrer">Share on X</a>
+            <a className="blur-share" onClick={() => track('share', 'x')} href={`https://x.com/intent/post?text=${encodeURIComponent(`${result.minted ? `Ape #${result.id} is facing you.` : `Ape #${result.id} is still looking the other way.`} @ApeFacingApes\n\nhttps://afa-mint-progress.vercel.app/ape/${result.id}?utm_source=x&utm_medium=social&utm_campaign=see-your-afa`)}`} target="_blank" rel="noopener noreferrer">Share on X</a>
             <a className="blur-permalink" href={`/ape/${result.id}`}>afa-mint-progress.vercel.app/ape/{result.id}</a>
           </div>
         )}

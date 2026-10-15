@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { setAfaIpfsImageSrc, tryNextAfaIpfsGateway } from '../utils/imageUrls';
 import { claimUrl } from '../constants/links';
 import './SiteHeader.css';
+import { track } from '../utils/track';
 import LatestMintsStrip, { useLatestMints } from './LatestMintsStrip';
 
 export const EDITOR_HOME = 'https://afa-editor.app';
@@ -210,6 +211,7 @@ const SiteHeader = ({
           <a
             className="header-cta"
             href={claimUrl('progress-header')}
+            onClick={() => track('mint_cta_click')}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -275,7 +277,7 @@ const SiteHeader = ({
             <button type="button" className="editor-link blur-open" onClick={onOpenBlur}>
               See your AFA
             </button>
-            <a className="editor-link" href={EDITOR_HOME} target="_blank" rel="noopener noreferrer">
+            <a className="editor-link" href={EDITOR_HOME} target="_blank" rel="noopener noreferrer" onClick={() => track('open_editor')}>
               Editor
             </a>
           </div>

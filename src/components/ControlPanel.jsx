@@ -17,6 +17,7 @@ import ShuffleIcon from '@mui/icons-material/Shuffle';
 import TraitFilter from './TraitFilter';
 import { EDITOR_HOME, LatestMints } from './SiteHeader';
 import './ControlPanel.css';
+import { track } from '../utils/track';
 
 const sectionLabelSx = {
   color: 'rgba(255,255,255,0.55)',
@@ -302,7 +303,7 @@ const ControlPanel = ({
         />
       </Box>
 
-      <a className="sheet-editor" href={EDITOR_HOME} target="_blank" rel="noopener noreferrer">
+      <a className="sheet-editor" href={EDITOR_HOME} target="_blank" rel="noopener noreferrer" onClick={() => track('open_editor')}>
         Open the editor
       </a>
       <LatestMints latestMints={latestMints} onMintClick={onMintClick} />

@@ -12,6 +12,7 @@ import {
 } from '../utils/imageUrls';
 import { claimUrl, shortAddress } from '../constants/links';
 import './ApeDetailsModal.css';
+import { track } from '../utils/track';
 
 const MIN_HIRES_DIMENSION = 256;
 const HIRES_BLUR_TIMEOUT_MS = 6000;
@@ -52,6 +53,7 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
     let cancelled = false;
     const { tokenId, image, isMinted } = apeData;
     currentTokenRef.current = tokenId;
+    track('ape_select', isMinted ? 'minted' : 'unminted');
     setBaseUrl(image);
     setHiresUrl(null);
     setHiresReady(false);
@@ -224,7 +226,7 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
 
             {isMinted ? (
               apeData.editorUrl && (
-                <a className="ape-card-cta" href={apeData.editorUrl} target="_blank" rel="noopener noreferrer">
+                <a className="ape-card-cta" href={apeData.editorUrl} target="_blank" rel="noopener noreferrer" onClick={() => track('open_editor', apeData.tokenId)}>
                   Style this ape →
                 </a>
               )
@@ -233,6 +235,7 @@ const ApeDetailsModal = ({ open, onClose, apeData }) => {
                 <a
                   className="ape-card-cta"
                   href={claimUrl('card-unminted')}
+                  onClick={() => track('mint_cta_click', apeData.tokenId)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
