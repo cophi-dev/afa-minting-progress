@@ -10,8 +10,8 @@ export const renderApePage = ({ id, minted, version = '3' }) => {
   const image = minted ? `/hires/${id}.webp` : `/api/blur-preview?id=${id}`;
   const fallback = `/images/${id}.webp`;
   const cta = minted
-    ? `<a class="cta" href="https://afa-editor.app/?tokenId=${id}&utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page">Open in the editor</a>`
-    : `<a class="cta" href="https://www.apefacingapes.com/claim?utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page" rel="noopener">Mint to reveal</a><a class="hint" href="https://www.apefacingapes.com/" rel="noopener">on apefacingapes.com ↗</a>`;
+    ? `<a class="cta" data-ev="open_editor" data-label="${id}" href="https://afa-editor.app/?tokenId=${id}&utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page">Open in the editor</a>`
+    : `<a class="cta" data-ev="mint_cta_click" data-label="${id}" href="https://www.apefacingapes.com/claim?utm_source=afa-progress&utm_medium=referral&utm_campaign=ape-page" rel="noopener">Mint to reveal</a><a class="hint" href="https://www.apefacingapes.com/" rel="noopener">on apefacingapes.com ↗</a>`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,6 +62,7 @@ ${cta}
 <a class="more" href="/">See all 10,000 apes</a>
 </main>
 <footer>Built by the Ape Facing Apes team · not affiliated with Yuga Labs<br />Ape Facing Apes: <a href="https://www.apefacingapes.com/" rel="noopener">apefacingapes.com</a> · <a href="https://x.com/ApeFacingApes" rel="noopener">@ApeFacingApes</a></footer>
+<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('[data-ev]');if(!a||!navigator.sendBeacon)return;try{navigator.sendBeacon('/api/event',new Blob([JSON.stringify({site:'progress',event:a.getAttribute('data-ev'),label:a.getAttribute('data-label')})],{type:'text/plain'}))}catch(_){}},true);</script>
 </body>
 </html>`;
 };
