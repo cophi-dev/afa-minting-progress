@@ -1,4 +1,11 @@
 import { eventPathname, parseEvent } from './lib/events.js';
+import {
+  clientIp,
+  hasTrustedProvenance,
+  MAX_EVENT_BODY_BYTES,
+  rateLimitAllows,
+  readBodyByteLength,
+} from './lib/requestGuard.js';
 
 const BOT_UA = /bot|crawler|spider|preview|facebookexternalhit|slurp|discord|telegram|whatsapp|headless/i;
 const ALLOWED_ORIGINS = new Set(['https://afa-editor.app', 'https://www.afa-editor.app', 'https://afa-mint-progress.vercel.app']);
@@ -21,6 +28,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
   if (origin && !ALLOWED_ORIGINS.has(origin)) return res.status(204).end();
   if (BOT_UA.test(String(req.headers['user-agent'] || ''))) return res.status(204).end();
+  if (!hasTrustedProvenance(req)) return res.status(204).end();
+  if (!rateLimitAllows(clientIp(req))) return res.status(204).end();
+  if (readBodyByteLength(req) > MAX_EVENT_BODY_BYTES) return res.status(204).end();
 
   // sendBeacon sends JSON as text/plain; <a ping> sends 'PING' with the event in the query string.
   const event = parseEvent(readBody(req) || req.query);

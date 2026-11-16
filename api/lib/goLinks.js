@@ -33,6 +33,9 @@ export const parseTarget = (value) => {
 /** Slugs used by links on the progress site itself (not shared on X). */
 export const INTERNAL_SLUGS = new Set(['ape-page', 'see-your-afa']);
 
+/** Slugs that may emit a click blob (must pass SLUG_PATTERN; invalid slugs redirect without logging). */
+export const slugAllowsClickLog = (slug) => Boolean(slug && SLUG_PATTERN.test(slug));
+
 export const buildTargetUrl = (target, slug) => {
   const url = new URL(GO_TARGETS[target]);
   const internal = INTERNAL_SLUGS.has(slug);

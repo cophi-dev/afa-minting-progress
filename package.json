@@ -27,7 +27,8 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build",
+    "build": "node scripts/generate-sitemap.mjs && vite build",
+    "resize-og-image": "node scripts/resize-og-image.mjs",
     "preview": "vite preview",
     "generate-webp": "node scripts/generate-webp.mjs",
     "generate-favicon": "node scripts/generate-favicon.mjs",

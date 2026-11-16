@@ -71,12 +71,11 @@ const NFTCell = memo(({
       id={`nft-${tokenId}`}
       className={`nft-cell ${isMinted ? 'minted' : 'unminted'}${isSelected ? ' selected' : ''}`}
       data-token-id={tokenId}
-      aria-label={`#${tokenId}, ${isMinted ? 'minted' : 'not minted'}${owner ? `, ${owner}` : ''}`}
       style={{ width: zoom, height: zoom, '--cell-zoom': zoom }}
     >
       <img
         src={src}
-        alt=""
+        alt={`AFA #${tokenId}, ${isMinted ? 'minted' : 'not minted'}${owner ? `, ${owner}` : ''}`}
         decoding={eager ? 'sync' : 'async'}
         fetchpriority={eager ? 'high' : 'auto'}
         loading={eager ? 'eager' : 'lazy'}

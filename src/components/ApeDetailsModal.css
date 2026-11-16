@@ -35,7 +35,7 @@
 .ape-card-loading {
   position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
   padding: 6px 12px; border-radius: 999px; background: rgba(11, 11, 12, 0.7);
-  font-family: var(--font-label); font-weight: 600; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-family: var(--font-label); font-weight: 600; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
   color: rgba(244, 244, 245, 0.8); white-space: nowrap;
 }
 .ape-card-body { display: flex; flex-direction: column; gap: 16px; padding: 28px 24px 24px; overflow-y: auto; }
@@ -51,7 +51,7 @@
 .ape-card-original figcaption,
 .ape-card-label,
 .ape-card-traits-toggle {
-  font-family: var(--font-label); font-weight: 600; font-size: 11px;
+  font-family: var(--font-label); font-weight: 600; font-size: 12px;
   letter-spacing: 0.1em; text-transform: uppercase; color: rgba(244, 244, 245, 0.6);
 }
 .ape-card-holder { display: flex; align-items: baseline; gap: 10px; margin: 0; }
