@@ -35,7 +35,17 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), mintStatusDevApi()],
     server: { port: 3000 },
-    build: { outDir: 'build' },
+    build: {
+      outDir: 'build',
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('mapping.json')) return 'mapping-data';
+            if (id.includes('image_cids.json')) return 'image-cids';
+          },
+        },
+      },
+    },
     esbuild: {
       loader: 'jsx',
       include: /src\/.*\.jsx?$/,

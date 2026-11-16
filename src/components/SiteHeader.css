@@ -110,7 +110,7 @@
   border: 0;
   background: none;
   color: rgba(244, 244, 245, 0.6);
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   white-space: nowrap;
 }
@@ -128,8 +128,10 @@
 
 .latest-line-item {
   display: block;
-  width: 28px;
-  height: 28px;
+  min-width: 32px;
+  min-height: 32px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: 0;
   border-radius: 999px;
@@ -152,7 +154,7 @@
   border: 0;
   background: none;
   color: rgba(244, 244, 245, 0.7);
-  font-size: 11px;
+  font-size: 12px;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -193,9 +195,9 @@
 
 .mint-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
 .mint-percent { color: #fff; font-size: 12px; }
-.mint-updated { color: rgba(244, 244, 245, 0.6); font-size: 11px; }
+.mint-updated { color: rgba(244, 244, 245, 0.6); font-size: 12px; }
 .mint-legend { display: inline-flex; gap: 12px; }
-.legend-item { display: inline-flex; align-items: center; gap: 6px; color: rgba(244, 244, 245, 0.7); font-size: 11px; }
+.legend-item { display: inline-flex; align-items: center; gap: 6px; color: rgba(244, 244, 245, 0.7); font-size: 12px; }
 .legend-swatch { display: block; width: 8px; height: 8px; border-radius: 999px; background: #6ee7a0; }
 .legend-swatch.unminted { background: rgba(255, 255, 255, 0.35); }
 
@@ -264,7 +266,7 @@
   .site-header .mint-count-number { font-size: 28px; }
   .site-header .mint-count { gap: 4px; }
   .site-header .mint-count-total { font-size: 13px; }
-  .header-cta { min-height: 40px; padding: 0 10px; font-size: 11px; letter-spacing: 0.06em; }
+  .header-cta { min-height: 40px; padding: 0 10px; font-size: 12px; letter-spacing: 0.06em; }
   .latest-line { order: 4; flex: 1 1 calc(100% - 120px); justify-content: flex-start; }
   .details-toggle { order: 5; min-height: 32px; }
   .header-compact .site-header { padding-top: 8px; padding-bottom: 8px; }
@@ -369,7 +371,7 @@
 
 .latest-mint-time {
   color: rgba(240, 242, 245, 0.62);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .sheet-editor {
@@ -397,13 +399,13 @@
 .header-compact .header-cta-wrap .header-cta { margin-left: 0; }
 .cta-dest {
   font-family: 'Barlow', ui-sans-serif, system-ui, sans-serif;
-  font-size: 11px; line-height: 1.2; color: rgba(255,255,255,0.6);
+  font-size: 12px; line-height: 1.2; color: rgba(255,255,255,0.6);
   text-decoration: none; white-space: nowrap;
 }
 .cta-dest:hover { color: #fff; text-decoration: underline; }
 .trust-line {
   margin: 4px 0 0; padding: 0; align-self: flex-start; width: 100%; text-align: left; font-family: 'Barlow', ui-sans-serif, system-ui, sans-serif;
-  font-size: 11px; line-height: 1.4; color: rgba(255,255,255,0.5);
+  font-size: 12px; line-height: 1.4; color: rgba(255,255,255,0.5);
 }
 .trust-about {
   background: none; border: 0; padding: 0; font: inherit; color: inherit;

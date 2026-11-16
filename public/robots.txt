@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://afa-mint-progress.vercel.app/sitemap.xml

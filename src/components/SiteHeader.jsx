@@ -188,7 +188,7 @@ const SiteHeader = ({
                     aria-label={`AFA #${mint.token_id}`}
                     title={`AFA #${mint.token_id}`}
                   >
-                    <img src={`/images/${mint.token_id}.webp`} alt="" width="28" height="28" />
+                    <img src={`/images/${mint.token_id}.webp`} alt="" width="32" height="32" />
                   </button>
                 </li>
               ))}
